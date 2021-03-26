@@ -1,0 +1,589 @@
+enum StatsType {
+  D
+  T
+}
+interface Event {
+  id: ID!
+  timestamp: Int!
+  transaction: Transaction!
+}
+
+type Loan  @entity {
+  id: ID!
+  loanToken: String!
+  collateralToken: String!
+  user: User!
+  lender: User!
+  caller: User
+  closer: User
+  liquidator: User
+}
+
+type Transaction @entity {
+  id: ID!
+  blockNumber: BigInt!
+  timestamp: Int!
+  gasUsed: BigInt!
+  gasPrice: BigInt!
+  from: String!
+  to: String!
+  events: [Event!] @derivedFrom(field: "transaction")
+}
+
+type TransferEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  from: User!
+  to: User!
+  value: BigInt!
+}
+
+type ApprovalEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  owner: User!
+  spender: User!
+  value: BigInt!
+}
+
+type MintEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+
+  minter: User!
+  tokenAmount: BigInt!
+  assetAmount: BigInt!
+  price: BigInt!
+}
+
+type BurnEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+
+  burner: User!
+  tokenAmount: BigInt!
+  assetAmount: BigInt!
+  price: BigInt!
+}
+
+type FlashBorrowEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  borrower: User!
+
+  loanToken: String!
+  loanAmount: BigInt!
+}
+
+type PayLendingFeeEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  payer: User!
+  token: String!
+  amount: BigInt!
+}
+
+type SettleFeeRewardForInterestExpenseEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  payer: User!
+  token: String!
+  loan: Loan!
+  amount: BigInt!
+}
+
+type PayTradingFeeEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  payer: User!
+  token: String!
+  loan: Loan!
+  amount: BigInt!
+}
+
+type PayBorrowingFeeEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  payer: User!
+  token: String!
+  loan: Loan!
+  amount: BigInt!
+}
+
+type EarnRewardEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  receiver: User!
+  token: String!
+  loan: Loan!
+  amount: BigInt!
+  feeType: Int!
+}
+
+type WithdrawLendingFeesEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  sender: User!
+  receiver: User!
+  token: String!
+  amount: BigInt!
+}
+
+type WithdrawTradingFeesEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  sender: User!
+  receiver: User!
+  token: String!
+  amount: BigInt!
+}
+
+type WithdrawBorrowingFeesEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  sender: User!
+  receiver: User!
+  token: String!
+  amount: BigInt!
+}
+
+type CloseWithDepositEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  loan: Loan!
+
+  repayAmount: BigInt!
+  collateralWithdrawAmount: BigInt!
+  collateralToLoanRate: BigInt!
+  currentMargin: BigInt!
+}
+type CloseWithSwapEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  loan: Loan!
+
+  positionCloseSize: BigInt!
+  loanCloseAmount: BigInt!
+  exitPrice: BigInt!
+  currentLeverage: BigInt!
+}
+type LiquidateEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  loan: Loan!
+
+  repayAmount: BigInt!
+  collateralWithdrawAmount: BigInt!
+  collateralToLoanRate: BigInt!
+  currentMargin: BigInt!
+}
+
+type RolloverEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  loan: Loan!
+  collateralAmountUsed: BigInt!
+  interestAmountAdded: BigInt!
+  loanEndTimestamp: Int!
+  gasRebate: BigInt!
+}
+
+type LoanDepositEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+
+  timestamp: Int!
+  loan: Loan!
+  depositValueAsCollateralToken: BigInt!
+  depositValueAsLoanToken: BigInt!
+}
+
+type BorrowEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  loan: Loan!
+  newPrincipal: BigInt!
+  newCollateral: BigInt!
+  interestRate: BigInt!
+  interestDuration: BigInt!
+  collateralToLoanRate: BigInt!
+  currentMargin: BigInt!
+}
+type TradeEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  loan: Loan!
+  positionSize: BigInt!
+  borrowedAmount: BigInt!
+  interestRate: BigInt!
+  settlementDate: Int!
+  entryPrice: BigInt!
+  entryLeverage: BigInt!
+  currentLeverage: BigInt!
+}
+
+type DepositCollateralEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  depositToken: String!
+  timestamp: Int!
+  loan: Loan!
+  depositAmount: BigInt!
+}
+
+type WithdrawCollateralEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  withdrawToken: String!
+  timestamp: Int!
+  loan: Loan!
+  withdrawAmount: BigInt!
+}
+
+type ExtendLoanDurationEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  depositToken: String!
+  timestamp: Int!
+  loan: Loan!
+  depositAmount: BigInt!
+  collateralUsedAmount: BigInt!
+  newEndTimestamp: Int!
+}
+
+type ReduceLoanDurationEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  withdrawToken: String!
+  timestamp: Int!
+  loan: Loan!
+  withdrawAmount: BigInt!
+  newEndTimestamp: Int!
+}
+
+type ClaimRewardEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  timestamp: Int!
+  user: User!
+  receiver: User!
+  token: String!
+  amount: BigInt!
+}
+
+type Staked implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  user: User!
+  timestamp: Int!
+  delegate: String!
+  token: String!
+  amount: BigInt!
+}
+
+type DelegateChanged implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  user: User!
+  timestamp: Int!
+  oldDelegate: BigInt!
+  newDelegate: BigInt!
+}
+type RewardAdded implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  user: User!
+  timestamp: Int!
+  reward: BigInt!
+  duration: Int!
+}
+
+type StakeEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  user: User!
+  timestamp: Int!
+  delegate: String!
+  token: String!
+  amount: BigInt!
+}
+
+type UnstakeEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  user: User!
+  timestamp: Int!
+  delegate: String!
+  token: String!
+  amount: BigInt!
+}
+
+type AddRewardsEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  sender: User!
+  timestamp: Int!
+  bzrxAmount: BigInt!
+  stableCoinAmount: BigInt!
+}
+
+type ClaimEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  user: User!
+  timestamp: Int!
+  bzrxAmount: BigInt!
+  stableCoinAmount: BigInt!
+}
+type ChangeDelegateEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  user: User!
+  timestamp: Int!
+  oldDelegate: String!
+  newDelegate: String!
+}
+
+type WithdrawFeesEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  sender: User!
+  timestamp: Int!
+}
+  
+type ConvertFeesEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  sender: User!
+  timestamp: Int!
+  bzrxOutput: BigInt!
+  stableCoinOutput: BigInt!
+}
+
+type DistributeFeesEvent implements Event @entity {
+  id: ID!
+  address: String!
+  transaction: Transaction!
+  sender: User!
+  timestamp: Int!
+  bzrxRewards: BigInt!
+  stableCoinRewards: BigInt!
+}
+
+
+type TokenStakingStat @entity {
+  id: ID!
+  type: StatsType
+  token: String!
+  date: Int!
+  from: User
+  lastEventTimeStamp: Int!
+  lastEventType: String!
+  stakeAmountVolume: BigDecimal!
+  stakeTxCount: BigInt!
+  unstakeAmountVolume: BigDecimal!
+  unstakeTxCount: BigInt!
+}
+
+type StakingStat @entity {
+  id: ID!
+  type: StatsType
+  date: Int!
+  from: User
+  lastEventTimeStamp: Int!
+  lastEventType: String!
+
+  addRewardsBzrxAmountVolume:  BigDecimal!
+  addRewardsStableCoinAmountVolume:  BigDecimal!
+  addRewardsTxCount:  BigInt!
+  claimBzrxAmountVolume:  BigDecimal!
+  claimStableCoinAmountVolume:  BigDecimal!
+  claimTxCount:  BigInt!
+  convertFeesBzrxOutputVolume:  BigDecimal!
+  convertFeesStableCoinOutputVolume:  BigDecimal!
+  convertFeesTxCount:  BigInt!
+  distributeFeesBzrxRewardsVolume:  BigDecimal!
+  distributeFeesStableCoinRewardsVolume:  BigDecimal!
+  distributeFeesTxCount:  BigInt!
+}
+
+type TokenStat @entity {
+  id: ID!
+  token: String!
+  type: StatsType
+  date: Int!
+  from: User
+  lastEventTimeStamp: Int!
+  lastEventType: String!
+  transferFromVolume: BigDecimal!
+  transferFromTxCount: BigInt!
+  transferToVolume: BigDecimal!
+  transferToTxCount: BigInt!
+  approvalOwnerVolume: BigDecimal!
+  approvalOwnerTxCount: BigInt!
+  approvalSpenderVolume: BigDecimal!
+  approvalSpenderTxCount: BigInt!
+  mintTokenVolume: BigDecimal!
+  mintAssetVolume: BigDecimal!
+  mintTxCount: BigInt!
+  burnTokenVolume: BigDecimal!
+  burnAssetVolume: BigDecimal!
+  burnTxCount: BigInt!
+  flashBorrowVolume: BigDecimal!
+  flashBorrowTxCount: BigInt!
+}
+
+
+type FeesStat @entity {
+  id: ID!
+  token: String!
+  date: Int!
+  type: StatsType
+  from: User
+  lastEventTimeStamp: Int!
+  lastEventType: String!
+  payLendingFeeVolume: BigDecimal!
+  payLendingFeeTxCount: BigInt!
+  settleFeeRewardForInterestExpenseVolume: BigDecimal!
+  settleFeeRewardForInterestExpenseTxCount: BigInt!
+  payTradingFeeVolume: BigDecimal!
+  payTradingFeeTxCount: BigInt!
+  payBorrowingFeeVolume: BigDecimal!
+  payBorrowingFeeTxCount: BigInt!
+  earnRewardVolume: BigDecimal!
+  earnRewardTxCount: BigInt!
+
+  withdrawLendingFeesSenderVolume: BigDecimal!
+  withdrawLendingFeesSenderTxCount: BigInt!
+  withdrawLendingFeesReceiverVolume: BigDecimal!
+  withdrawLendingFeesReceiverTxCount: BigInt!
+  withdrawTradingFeesSenderVolume: BigDecimal!
+  withdrawTradingFeesSenderTxCount: BigInt!
+  withdrawTradingFeesReceiverVolume: BigDecimal!
+  withdrawTradingFeesReceiverTxCount: BigInt!
+  withdrawBorrowingFeesSenderVolume: BigDecimal!
+  withdrawBorrowingFeesSenderTxCount: BigInt!
+  withdrawBorrowingFeesReceiverVolume: BigDecimal!
+  withdrawBorrowingFeesReceiverTxCount: BigInt!
+}
+
+type LoanStat @entity {
+  id: ID!
+  loanToken: String!
+  collateralToken: String!
+  date: Int!
+  type: StatsType
+  from: User
+  lastEventTimeStamp: Int!
+  lastEventType: String!
+  closeWithDepositRepayAmountUserVolume: BigDecimal!
+  closeWithDepositRepayAmountCloserVolume: BigDecimal!
+  closeWithDepositCloserTxCount: BigInt!
+  closeWithDepositUserTxCount: BigInt!
+  closeWithSwapPositionCloseSizeCloserVolume: BigDecimal!
+  closeWithSwapLoanCloseAmountCloserVolume: BigDecimal!
+  closeWithSwapPositionCloseSizeUserVolume: BigDecimal!
+  closeWithSwapLoanCloseAmountUserVolume: BigDecimal!
+  closeWithSwapUserTxCount: BigInt!
+  closeWithSwapCloserTxCount: BigInt!
+
+  liquidateRepayAmountLiquidatorVolume: BigDecimal!
+  liquidateRepayAmountUserVolume: BigDecimal!
+  liquidateLiquidatorTxCount: BigInt!
+  liquidateUserTxCount: BigInt!
+
+  rolloverCollateralAmountUsedCallerVolume: BigDecimal!
+  rolloverInterestAmountAddedCallerVolume: BigDecimal!
+  rolloverCollateralAmountUsedUserVolume: BigDecimal!
+  rolloverInterestAmountAddedUserVolume: BigDecimal!
+  rolloverCallerTxCount: BigInt!
+  rolloverUserTxCount: BigInt!
+
+  loanDepositVolume: BigDecimal!
+  loanDepositTxCount: BigInt!
+  borrowNewPrincipalVolume: BigDecimal!
+  newCollateral: BigDecimal!
+  borrowTxCount: BigInt!
+  tradePositionSizeVolume: BigDecimal!
+  tradeBorrowedAmountVolume: BigDecimal!
+  tradeTxCount: BigInt!
+  depositCollateralDepositAmountVolume: BigDecimal!
+  depositCollateralTxCount: BigInt!
+  withdrawCollateralWithdrawAmountVolume: BigDecimal!
+  withdrawCollateralTxCount: BigInt!
+  extendLoanDurationDepositAmountVolume: BigDecimal!
+  extendLoanDurationCollateralUsedAmountVolume: BigDecimal!
+  extendLoanDurationTxCount: BigInt!
+  reduceLoanDurationWithdrawAmountVolume: BigDecimal!
+  reduceLoanDurationTxCount: BigInt!
+  claimRewardAmountVolume: BigDecimal!
+  claimRewardTxCount: BigInt!
+}
+
+type User @entity {
+  id: ID!
+
+}
+
+type UserStat @entity {
+  id: ID!
+  type: StatsType
+  date: Int
+  
+  newUserCount: BigInt!
+  accumulatedUserCount: BigInt!
+}

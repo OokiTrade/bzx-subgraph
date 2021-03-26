@@ -1,0 +1,23 @@
+{
+  "name": "bzx",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "graph build --debug",
+    "prepare:mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:mainnet-test": "mustache config/mainnet-test.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:kovan": "mustache config/kovan.json subgraph.template.yaml > subgraph.yaml",
+    "codegen": "graph codegen --debug --output-dir src/types/"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.19.0",
+    "mustache": "^3.1.0"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-ts": "^0.20.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "truffle": "^5.0.4",
+    "truffle-contract": "^4.0.5",
+    "truffle-hdwallet-provider": "^1.0.4"
+  }
+}

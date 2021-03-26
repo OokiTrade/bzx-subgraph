@@ -1,0 +1,61 @@
+specVersion: 0.0.2
+description: bZx is a protocol for borrowing, lending, and margin trading
+repository: https://github.com/bZxNetwork/bzx-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: BZRX
+    network: mainnet
+    source:
+      address: '0x56d811088235F11C8920698a204A5010a788f4b3'
+      abi: Token
+      startBlock: 12093425
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/Token.ts
+      abis:
+        - name: Token
+          file: ./abis/Token.json
+      entities:
+          - TransferEvent
+          - ApprovalEvent
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+  - kind: ethereum/contract
+    name: iBZRX
+    network: mainnet
+    source:
+      address: '0x18240BD9C07fA6156Ce3F3f61921cC82b2619157'
+      abi: iToken
+      startBlock: 12093425
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/iToken.ts
+      abis:
+        - name: iToken
+          file: ./abis/iToken.json
+      entities:
+          - TransferEvent
+          - ApprovalEvent
+          - MintEvent
+          - BurnEvent
+          - FlashBorrow
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Mint(indexed address,uint256,uint256,uint256)
+          handler: handleMint
+        - event: Burn(indexed address,uint256,uint256,uint256)
+          handler: handleBurn
+        - event: FlashBorrow(address,address,address,uint256)
+          handler: handleFlashBorrow
