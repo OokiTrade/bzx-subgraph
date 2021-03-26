@@ -1,0 +1,117 @@
+specVersion: 0.0.2
+description: bZx is a protocol for borrowing, lending, and margin trading
+repository: https://github.com/bZxNetwork/bzx-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  {{#protocol}}
+  - kind: ethereum/contract
+    name: {{name}}
+    network: {{network}}
+    source:
+      address: '{{address}}'
+      abi: {{name}}
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/{{abi}}.ts
+      abis:
+        - name: {{abi}}
+          file: ./abis/{{abi}}.json
+      entities:
+          {{#entities}}
+          - {{entity}}
+          {{/entities}}
+      eventHandlers:
+        {{#entities}}
+        - event: {{event}}
+          handler: {{handler}}
+        {{/entities}}
+  {{/protocol}}
+  {{#tokens}}
+  - kind: ethereum/contract
+    name: {{name}}
+    network: {{network}}
+    source:
+      address: '{{address}}'
+      abi: {{abi}}
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/{{abi}}.ts
+      abis:
+        - name: {{abi}}
+          file: ./abis/{{abi}}.json
+      entities:
+          - TransferEvent
+          - ApprovalEvent
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+  {{/tokens}}
+  {{#itokens}}
+  - kind: ethereum/contract
+    name: {{name}}
+    network: {{network}}
+    source:
+      address: '{{address}}'
+      abi: {{abi}}
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/{{abi}}.ts
+      abis:
+        - name: {{abi}}
+          file: ./abis/{{abi}}.json
+      entities:
+          - TransferEvent
+          - ApprovalEvent
+          - MintEvent
+          - BurnEvent
+          - FlashBorrow
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Mint(indexed address,uint256,uint256,uint256)
+          handler: handleMint
+        - event: Burn(indexed address,uint256,uint256,uint256)
+          handler: handleBurn
+        - event: FlashBorrow(address,address,address,uint256)
+          handler: handleFlashBorrow
+  {{/itokens}}
+  {{#staking}}
+  - kind: ethereum/contract
+    name: {{name}}
+    network: {{network}}
+    source:
+      address: '{{address}}'
+      abi: {{name}}
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/{{abi}}.ts
+      abis:
+        - name: {{abi}}
+          file: ./abis/{{abi}}.json
+      entities:
+          {{#entities}}
+          - {{entity}}
+          {{/entities}}
+      eventHandlers:
+        {{#entities}}
+        - event: {{event}}
+          handler: {{handler}}
+        {{/entities}}
+  {{/staking}}
