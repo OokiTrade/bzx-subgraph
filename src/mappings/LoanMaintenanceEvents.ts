@@ -1,4 +1,4 @@
-import { 
+import {
     DepositCollateral,
     WithdrawCollateral,
     ExtendLoanDuration,
@@ -6,14 +6,14 @@ import {
     ClaimReward
 } from '../types/LoanMaintenanceEvents/LoanMaintenanceEvents'
 
-import { 
+import {
     DepositCollateralEvent,
     WithdrawCollateralEvent,
     ExtendLoanDurationEvent,
     ReduceLoanDurationEvent,
     ClaimRewardEvent,
     LoanStat
- } from '../types/schema'
+} from '../types/schema'
 
 import { getEventId, ONE_BI, saveTransaction, saveLoanStats, getLoanById, getUser, EMPTY_LOANSTAT_FUNC } from '../helpers/helper'
 import { BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
@@ -24,10 +24,10 @@ export function handleDepositCollateral(networkEvent: DepositCollateral): void {
     let event = new DepositCollateralEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
-    
+
     let loan = getLoanById(networkEvent.params.loanId.toHex());
-    if(!loan) {
-        log.warning("Related loan {} missing. skip event",[networkEvent.params.loanId.toHex()]);
+    if (!loan) {
+        log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
         return;
     }
 
@@ -40,12 +40,12 @@ export function handleDepositCollateral(networkEvent: DepositCollateral): void {
     event.timestamp = timestamp;
     event.depositToken = networkEvent.params.depositToken.toHex();
     event.depositAmount = networkEvent.params.depositAmount;
-    event.save();    
-    
-    let update = (data: LoanStat, values: BigInt[]): void =>{
-      data.depositCollateralDepositAmountVolume = data.depositCollateralDepositAmountVolume.plus(new BigDecimal(values[0]));
-      data.depositCollateralTxCount = data.depositCollateralTxCount.plus(ONE_BI);  
-      data.lastEventType = 'DepositCollateral';
+    event.save();
+
+    let update = (data: LoanStat, values: BigInt[]): void => {
+        data.depositCollateralDepositAmountVolume = data.depositCollateralDepositAmountVolume.plus(new BigDecimal(values[0]));
+        data.depositCollateralTxCount = data.depositCollateralTxCount.plus(ONE_BI);
+        data.lastEventType = 'DepositCollateral';
     };
 
     saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.depositAmount], update, EMPTY_LOANSTAT_FUNC);
@@ -61,26 +61,26 @@ export function handleWithdrawCollateral(networkEvent: WithdrawCollateral): void
     );
 
     let loan = getLoanById(networkEvent.params.loanId.toHex());
-    if(!loan) {
-        log.warning("Related loan {} missing. skip event",[networkEvent.params.loanId.toHex()]);
+    if (!loan) {
+        log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
         return;
     }
 
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let user = getUser(loan.user, timestamp);
-    event.loan= loan.id;
+    event.loan = loan.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
     event.withdrawToken = networkEvent.params.withdrawToken.toHex();
     event.withdrawAmount = networkEvent.params.withdrawAmount;
-    event.save();    
-    
-    let update = (data: LoanStat, values: BigInt[]): void =>{
-      data.withdrawCollateralWithdrawAmountVolume = data.withdrawCollateralWithdrawAmountVolume.plus(new BigDecimal(values[0]));
-      data.withdrawCollateralTxCount = data.withdrawCollateralTxCount.plus(ONE_BI);  
-      data.lastEventType = 'WithdrawCollateral';
+    event.save();
+
+    let update = (data: LoanStat, values: BigInt[]): void => {
+        data.withdrawCollateralWithdrawAmountVolume = data.withdrawCollateralWithdrawAmountVolume.plus(new BigDecimal(values[0]));
+        data.withdrawCollateralTxCount = data.withdrawCollateralTxCount.plus(ONE_BI);
+        data.lastEventType = 'WithdrawCollateral';
     };
 
     saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.withdrawAmount], update, EMPTY_LOANSTAT_FUNC);
@@ -93,17 +93,17 @@ export function handleExtendLoanDuration(networkEvent: ExtendLoanDuration): void
     let event = new ExtendLoanDurationEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
-    
+
     let loan = getLoanById(networkEvent.params.loanId.toHex());
-    if(!loan) {
-        log.warning("Related loan {} missing. skip event",[networkEvent.params.loanId.toHex()]);
+    if (!loan) {
+        log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
         return;
     }
 
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let user = getUser(loan.user, timestamp);
-    event.loan= loan.id;
+    event.loan = loan.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
@@ -111,13 +111,13 @@ export function handleExtendLoanDuration(networkEvent: ExtendLoanDuration): void
     event.depositAmount = networkEvent.params.depositAmount;
     event.collateralUsedAmount = networkEvent.params.collateralUsedAmount;
     event.newEndTimestamp = networkEvent.params.newEndTimestamp.toI32();
-    event.save();    
-    
-    let update = (data: LoanStat, values: BigInt[]): void =>{
-      data.extendLoanDurationDepositAmountVolume = data.extendLoanDurationDepositAmountVolume.plus(new BigDecimal(values[0]));
-      data.extendLoanDurationCollateralUsedAmountVolume = data.extendLoanDurationCollateralUsedAmountVolume.plus(new BigDecimal(values[1]));
-      data.extendLoanDurationTxCount = data.extendLoanDurationTxCount.plus(ONE_BI);  
-      data.lastEventType = 'ExtendLoanDuration';
+    event.save();
+
+    let update = (data: LoanStat, values: BigInt[]): void => {
+        data.extendLoanDurationDepositAmountVolume = data.extendLoanDurationDepositAmountVolume.plus(new BigDecimal(values[0]));
+        data.extendLoanDurationCollateralUsedAmountVolume = data.extendLoanDurationCollateralUsedAmountVolume.plus(new BigDecimal(values[1]));
+        data.extendLoanDurationTxCount = data.extendLoanDurationTxCount.plus(ONE_BI);
+        data.lastEventType = 'ExtendLoanDuration';
     };
 
     saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.depositAmount, event.collateralUsedAmount], update, EMPTY_LOANSTAT_FUNC);
@@ -130,29 +130,29 @@ export function handleReduceLoanDuration(networkEvent: ReduceLoanDuration): void
     let event = new ReduceLoanDurationEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
-    
+
     let loan = getLoanById(networkEvent.params.loanId.toHex());
-    if(!loan) {
-        log.warning("Related loan {} missing. skip event",[networkEvent.params.loanId.toHex()]);
+    if (!loan) {
+        log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
         return;
     }
-    
+
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let user = getUser(loan.user, timestamp);
-    event.loan= loan.id;
+    event.loan = loan.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
     event.withdrawToken = networkEvent.params.withdrawToken.toHex();
     event.withdrawAmount = networkEvent.params.withdrawAmount;
     event.newEndTimestamp = networkEvent.params.newEndTimestamp.toI32();
-    event.save();    
-    
-    let update = (data: LoanStat, values: BigInt[]): void =>{
-      data.reduceLoanDurationWithdrawAmountVolume = data.reduceLoanDurationWithdrawAmountVolume.plus(new BigDecimal(values[0]));
-      data.reduceLoanDurationTxCount = data.reduceLoanDurationTxCount.plus(ONE_BI);  
-      data.lastEventType = 'ExtendLoanDuration';
+    event.save();
+
+    let update = (data: LoanStat, values: BigInt[]): void => {
+        data.reduceLoanDurationWithdrawAmountVolume = data.reduceLoanDurationWithdrawAmountVolume.plus(new BigDecimal(values[0]));
+        data.reduceLoanDurationTxCount = data.reduceLoanDurationTxCount.plus(ONE_BI);
+        data.lastEventType = 'ExtendLoanDuration';
     };
 
     saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.withdrawAmount], update, EMPTY_LOANSTAT_FUNC);
