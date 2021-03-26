@@ -6,15 +6,15 @@ Steps to deploy the subgraph
 3. Generate deployemnt key
 4. yarn install
 5. Configure subgraph.yaml:
-    yarn prepare:mainnet-test
-    or
-    yarn prepare:mainnet
+    - yarn prepare:mainnet-test
+    - or
+    - yarn prepare:mainnet
 6. Generate models from abi
-    yarn codgen
+    - yarn codgen
 7. Authenticate in graph
-    graph auth https://api.thegraph.com/deploy/ <graph key>
+    - graph auth https://api.thegraph.com/deploy/ KEY
 8. Deploy subgraph
-    graph deploy <username>/<subgraphname> --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/
+    - graph deploy USERNAME/SUBGRAPHNAME --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/
 
     username and subgraphname you can get from graph portal url
 
