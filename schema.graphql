@@ -1,6 +1,7 @@
 enum StatsType {
   D
   T
+  A
 }
 interface Event {
   id: ID!
@@ -430,20 +431,21 @@ type TokenStakingStat @entity {
   type: StatsType
   token: String!
   date: Int!
-  from: User
+  user: User
   lastEventTimeStamp: Int!
   lastEventType: String!
   stakeAmountVolume: BigDecimal!
   stakeTxCount: BigInt!
   unstakeAmountVolume: BigDecimal!
   unstakeTxCount: BigInt!
+  accumulated: TokenStakingStat
 }
 
 type StakingStat @entity {
   id: ID!
   type: StatsType
   date: Int!
-  from: User
+  user: User
   lastEventTimeStamp: Int!
   lastEventType: String!
 
@@ -459,6 +461,7 @@ type StakingStat @entity {
   distributeFeesBzrxRewardsVolume:  BigDecimal!
   distributeFeesStableCoinRewardsVolume:  BigDecimal!
   distributeFeesTxCount:  BigInt!
+  accumulated: StakingStat
 }
 
 type TokenStat @entity {
@@ -466,7 +469,7 @@ type TokenStat @entity {
   token: String!
   type: StatsType
   date: Int!
-  from: User
+  user: User
   lastEventTimeStamp: Int!
   lastEventType: String!
   transferFromVolume: BigDecimal!
@@ -485,6 +488,7 @@ type TokenStat @entity {
   burnTxCount: BigInt!
   flashBorrowVolume: BigDecimal!
   flashBorrowTxCount: BigInt!
+  accumulated: TokenStat
 }
 
 
@@ -493,7 +497,7 @@ type FeesStat @entity {
   token: String!
   date: Int!
   type: StatsType
-  from: User
+  user: User
   lastEventTimeStamp: Int!
   lastEventType: String!
   payLendingFeeVolume: BigDecimal!
@@ -519,6 +523,8 @@ type FeesStat @entity {
   withdrawBorrowingFeesSenderTxCount: BigInt!
   withdrawBorrowingFeesReceiverVolume: BigDecimal!
   withdrawBorrowingFeesReceiverTxCount: BigInt!
+
+  accumulated: FeesStat
 }
 
 type LoanStat @entity {
@@ -527,7 +533,7 @@ type LoanStat @entity {
   collateralToken: String!
   date: Int!
   type: StatsType
-  from: User
+  user: User
   lastEventTimeStamp: Int!
   lastEventType: String!
   closeWithDepositRepayAmountUserVolume: BigDecimal!
@@ -572,6 +578,7 @@ type LoanStat @entity {
   reduceLoanDurationTxCount: BigInt!
   claimRewardAmountVolume: BigDecimal!
   claimRewardTxCount: BigInt!
+  accumulated: LoanStat
 }
 
 type User @entity {

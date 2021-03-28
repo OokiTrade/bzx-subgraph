@@ -1,6 +1,6 @@
 {
   "network": "mainnet",
-  "startBlock": 12093425,
+  "startBlock": 12061763,
   "staking": [
     {
       "name": "StakingConstants",

@@ -7,12 +7,13 @@ import {
 import {
   WithdrawLendingFeesEvent,
   WithdrawTradingFeesEvent,
-  WithdrawBorrowingFeesEvent,
-  FeesStat
+  WithdrawBorrowingFeesEvent
 } from '../types/schema'
 
-import { getEventId, ONE_BI, saveTransaction, saveFeesStats, getUser, EMPTY_FEESSTAT_FUNC } from '../helpers/helper'
-import { BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
+import { getEventId, saveTransaction, getUser } from '../helpers/helper'
+import { log } from "@graphprotocol/graph-ts";
+import { ONE_BI } from '../helpers/constants';
+import { saveStats } from '../helpers/feesStatsHelper';
 
 
 export function handleWithdrawLendingFees(networkEvent: WithdrawLendingFees): void {
@@ -33,21 +34,17 @@ export function handleWithdrawLendingFees(networkEvent: WithdrawLendingFees): vo
   event.amount = networkEvent.params.amount;
   event.save();
 
-  let updateSender = (data: FeesStat, values: BigInt[]): void => {
-    data.withdrawLendingFeesSenderVolume = data.withdrawLendingFeesSenderVolume.plus(new BigDecimal(values[0]));
-    data.withdrawLendingFeesSenderTxCount = data.withdrawLendingFeesSenderTxCount.plus(ONE_BI);
-    data.lastEventType = 'WithdrawLendingFeesEvent';
-  };
+  saveStats(sender, event.token, event.timestamp,  
+    'WithdrawLendingFees', 
+    ['withdrawLendingFeesSenderVolume', 'withdrawLendingFeesSenderTxCount'],
+    [event.amount, ONE_BI]
+  );
 
-  let updateReceiver = (data: FeesStat, values: BigInt[]): void => {
-    data.withdrawLendingFeesReceiverVolume = data.withdrawLendingFeesReceiverVolume.plus(new BigDecimal(values[0]));
-    data.withdrawLendingFeesReceiverTxCount = data.withdrawLendingFeesReceiverTxCount.plus(ONE_BI);
-    data.lastEventType = 'WithdrawLendingFees';
-  };
-
-  saveFeesStats('D', null, event.token, event.timestamp, [event.amount], updateSender, updateReceiver);
-  saveFeesStats('D', sender, event.token, event.timestamp, [event.amount], updateSender, EMPTY_FEESSTAT_FUNC);
-  saveFeesStats('D', receiver, event.token, event.timestamp, [event.amount], updateReceiver, EMPTY_FEESSTAT_FUNC);
+  saveStats(receiver, event.token, event.timestamp,  
+    'WithdrawLendingFees', 
+    ['withdrawLendingFeesReceiverVolume', 'withdrawLendingFeesReceiverTxCount'],
+    [event.amount, ONE_BI]
+  );
   log.debug("handleWithdrawLendingFees done", []);
 }
 
@@ -69,21 +66,18 @@ export function handleWithdrawTradingFees(networkEvent: WithdrawTradingFees): vo
   event.amount = networkEvent.params.amount;
   event.save();
 
-  let updateSender = (data: FeesStat, values: BigInt[]): void => {
-    data.withdrawTradingFeesSenderVolume = data.withdrawTradingFeesSenderVolume.plus(new BigDecimal(values[0]));
-    data.withdrawTradingFeesSenderTxCount = data.withdrawTradingFeesSenderTxCount.plus(ONE_BI);
-    data.lastEventType = 'WithdrawTradingFees';
-  };
+  saveStats(sender, event.token, event.timestamp,  
+    'WithdrawTradingFees', 
+    ['withdrawTradingFeesSenderVolume', 'withdrawTradingFeesSenderTxCount'],
+    [event.amount, ONE_BI]
+  );
 
-  let updateReceiver = (data: FeesStat, values: BigInt[]): void => {
-    data.withdrawTradingFeesReceiverVolume = data.withdrawTradingFeesReceiverVolume.plus(new BigDecimal(values[0]));
-    data.withdrawTradingFeesReceiverTxCount = data.withdrawTradingFeesReceiverTxCount.plus(ONE_BI);
-    data.lastEventType = 'WithdrawTradingFees';
-  };
+  saveStats(receiver, event.token, event.timestamp,  
+    'WithdrawTradingFees', 
+    ['withdrawTradingFeesReceiverVolume', 'withdrawTradingFeesReceiverTxCount'],
+    [event.amount, ONE_BI]
+  );
 
-  saveFeesStats('D', null, event.token, event.timestamp, [event.amount], updateSender, updateReceiver);
-  saveFeesStats('D', sender, event.token, event.timestamp, [event.amount], updateSender, EMPTY_FEESSTAT_FUNC);
-  saveFeesStats('D', receiver, event.token, event.timestamp, [event.amount], updateReceiver, EMPTY_FEESSTAT_FUNC);
   log.debug("handleWithdrawTradingFees done", []);
 }
 
@@ -105,19 +99,16 @@ export function handleWithdrawBorrowingFees(networkEvent: WithdrawBorrowingFees)
   event.amount = networkEvent.params.amount;
   event.save();
 
-  let updateSender = (data: FeesStat, values: BigInt[]): void => {
-    data.withdrawBorrowingFeesSenderVolume = data.withdrawBorrowingFeesSenderVolume.plus(new BigDecimal(values[0]));
-    data.withdrawBorrowingFeesSenderTxCount = data.withdrawBorrowingFeesSenderTxCount.plus(ONE_BI);
-    data.lastEventType = 'WithdrawBorrowingFees';
-  };
-  let updateReceiver = (data: FeesStat, values: BigInt[]): void => {
-    data.withdrawBorrowingFeesReceiverVolume = data.withdrawBorrowingFeesReceiverVolume.plus(new BigDecimal(values[0]));
-    data.withdrawBorrowingFeesReceiverTxCount = data.withdrawBorrowingFeesReceiverTxCount.plus(ONE_BI);
-    data.lastEventType = 'WithdrawBorrowingFees';
-  };
+  saveStats(sender, event.token, event.timestamp,  
+    'WithdrawBorrowingFees', 
+    ['withdrawBorrowingFeesSenderVolume', 'withdrawBorrowingFeesSenderTxCount'],
+    [event.amount, ONE_BI]
+  );
 
-  saveFeesStats('D', null, event.token, event.timestamp, [event.amount], updateSender, updateReceiver);
-  saveFeesStats('D', sender, event.token, event.timestamp, [event.amount], updateSender, EMPTY_FEESSTAT_FUNC);
-  saveFeesStats('D', receiver, event.token, event.timestamp, [event.amount], updateReceiver, EMPTY_FEESSTAT_FUNC);
+  saveStats(receiver, event.token, event.timestamp,  
+    'WithdrawBorrowingFees', 
+    ['withdrawBorrowingFeesReceiverVolume', 'withdrawBorrowingFeesReceiverTxCount'],
+    [event.amount, ONE_BI]
+  );
   log.debug("handleWithdrawBorrowingFees done", []);
 }

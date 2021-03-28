@@ -1,8 +1,10 @@
 //../types/BZRX/Token is used for BZRX, vBZRX, LPT tokens
 import { Transfer, Approval } from '../types/BZRX/Token'
-import { TransferEvent, ApprovalEvent, TokenStat } from '../types/schema'
-import { getEventId, ONE_BI, saveTransaction, saveTokenStats, getUser, EMPTY_TOKENSTAT_FUNC } from '../helpers/helper'
-import { BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
+import { TransferEvent, ApprovalEvent } from '../types/schema'
+import { getEventId, saveTransaction, getUser } from '../helpers/helper'
+import { log } from "@graphprotocol/graph-ts";
+import { ONE_BI } from '../helpers/constants';
+import { saveStats } from '../helpers/tokenStatsHelper';
 
 
 export function handleTransfer(networkEvent: Transfer): void {
@@ -21,21 +23,17 @@ export function handleTransfer(networkEvent: Transfer): void {
   event.to = to.id;
   event.value = networkEvent.params.value;
   event.save();
+  saveStats(from, event.address, event.timestamp,  
+    'Transfer', 
+    ['transferFromVolume', 'transferFromTxCount'],
+    [event.value, ONE_BI]
+  );
+  saveStats(from, event.address, event.timestamp,  
+    'Transfer', 
+    ['transferToVolume', 'transferToTxCount'],
+    [event.value, ONE_BI]
+  );
 
-  let updateFrom = (data: TokenStat, values: BigInt[]): void => {
-    data.transferFromVolume = data.transferFromVolume.plus(new BigDecimal(values[0]));
-    data.transferFromTxCount = data.transferFromTxCount.plus(ONE_BI);
-    data.lastEventType = 'Transfer';
-  };
-  let updateTo = (data: TokenStat, values: BigInt[]): void => {
-    data.transferToVolume = data.transferToVolume.plus(new BigDecimal(values[0]));
-    data.transferToTxCount = data.transferToTxCount.plus(ONE_BI);
-    data.lastEventType = 'Transfer';
-  };
-
-  saveTokenStats('D', null, event.address, event.timestamp, [event.value], updateFrom, updateTo);
-  saveTokenStats('D', from, event.address, event.timestamp, [event.value], updateFrom, EMPTY_TOKENSTAT_FUNC);
-  saveTokenStats('D', to, event.address, event.timestamp, [event.value], updateTo, EMPTY_TOKENSTAT_FUNC);
   log.debug("handleTransfer done", []);
 }
 
@@ -57,20 +55,17 @@ export function handleApproval(networkEvent: Approval): void {
   event.value = networkEvent.params.value;
   event.save();
 
-  let updateOwner = (data: TokenStat, values: BigInt[]): void => {
-    data.approvalOwnerVolume = data.approvalOwnerVolume.plus(new BigDecimal(values[0]));
-    data.approvalOwnerTxCount = data.approvalOwnerTxCount.plus(ONE_BI);
-    data.lastEventType = 'Approval';
-  };
-  let updateSpender = (data: TokenStat, values: BigInt[]): void => {
-    data.approvalSpenderVolume = data.approvalSpenderVolume.plus(new BigDecimal(values[0]));
-    data.approvalSpenderTxCount = data.approvalSpenderTxCount.plus(ONE_BI);
-    data.lastEventType = 'Approval';
-  };
+  saveStats(owner, event.address, event.timestamp,  
+    'Approval', 
+    ['approvalOwnerVolume', 'approvalOwnerTxCount'],
+    [event.value, ONE_BI]
+  );
+  saveStats(spender, event.address, event.timestamp,  
+    'Approval', 
+    ['approvalSpenderVolume', 'approvalSpenderTxCount'],
+    [event.value, ONE_BI]
+  );
 
-  saveTokenStats('D', null, event.address, event.timestamp, [event.value], updateOwner, updateSpender);
-  saveTokenStats('D', owner, event.address, event.timestamp, [event.value], updateOwner, EMPTY_TOKENSTAT_FUNC);
-  saveTokenStats('D', spender, event.address, event.timestamp, [event.value], updateSpender, EMPTY_TOKENSTAT_FUNC);
   log.debug("handleApproval done", []);
 }
 

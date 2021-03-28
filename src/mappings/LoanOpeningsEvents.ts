@@ -5,12 +5,13 @@ import {
 
 import {
     BorrowEvent,
-    TradeEvent,
-    LoanStat
+    TradeEvent
 } from '../types/schema'
 
-import { getEventId, ONE_BI, saveTransaction, saveLoanStats, saveLoan, getUser, EMPTY_LOANSTAT_FUNC } from '../helpers/helper'
-import { BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
+import { getEventId, saveTransaction, saveLoan, getUser } from '../helpers/helper'
+import { log } from "@graphprotocol/graph-ts";
+import { ONE_BI } from '../helpers/constants';
+import { saveStats } from '../helpers/loanStatsHelper';
 
 
 export function handleBorrow(networkEvent: Borrow): void {
@@ -40,16 +41,11 @@ export function handleBorrow(networkEvent: Borrow): void {
     event.currentMargin = networkEvent.params.currentMargin;
     event.save();
 
-    let update = (data: LoanStat, values: BigInt[]): void => {
-        data.borrowNewPrincipalVolume = data.borrowNewPrincipalVolume.plus(new BigDecimal(values[0]));
-        data.newCollateral = data.newCollateral.plus(new BigDecimal(values[1]));
-        data.borrowTxCount = data.borrowTxCount.plus(ONE_BI);
-        data.lastEventType = 'Borrow';
-    };
-
-    saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.newPrincipal, event.newCollateral], update, EMPTY_LOANSTAT_FUNC);
-    saveLoanStats('D', user, loan.loanToken, loan.collateralToken, event.timestamp, [event.newPrincipal, event.newCollateral], update, EMPTY_LOANSTAT_FUNC);
-
+    saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
+        'Borrow',
+        ['borrowNewPrincipalVolume', 'newCollateral', 'borrowTxCount'],
+        [event.newPrincipal, event.newCollateral, ONE_BI]
+    );
     log.debug("handleBorrow done", []);
 }
 
@@ -80,14 +76,10 @@ export function handleTrade(networkEvent: Trade): void {
     event.currentLeverage = networkEvent.params.currentLeverage;
     event.save();
 
-    let update = (data: LoanStat, values: BigInt[]): void => {
-        data.tradeBorrowedAmountVolume = data.tradeBorrowedAmountVolume.plus(new BigDecimal(values[0]));
-        data.tradePositionSizeVolume = data.tradePositionSizeVolume.plus(new BigDecimal(values[1]));
-        data.tradeTxCount = data.tradeTxCount.plus(ONE_BI);
-        data.lastEventType = 'Borrow';
-    };
-
-    saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.borrowedAmount, event.positionSize], update, EMPTY_LOANSTAT_FUNC);
-    saveLoanStats('D', user, loan.loanToken, loan.collateralToken, event.timestamp, [event.borrowedAmount, event.positionSize], update, EMPTY_LOANSTAT_FUNC);
+    saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
+        'Trade',
+        ['tradeBorrowedAmountVolume', 'tradePositionSizeVolume', 'tradeTxCount'],
+        [event.borrowedAmount, event.positionSize, ONE_BI]
+    );
     log.debug("handleTrade done", []);
 }

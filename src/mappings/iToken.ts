@@ -1,8 +1,10 @@
 //../types/iBZRX/iToken is used for all iTokens
 import { Transfer, Approval, Mint, Burn, FlashBorrow } from '../types/iBZRX/iToken'
-import { TransferEvent, ApprovalEvent, MintEvent, BurnEvent, FlashBorrowEvent, TokenStat } from '../types/schema'
-import { getEventId, ONE_BI, saveTransaction, saveTokenStats, getUser, EMPTY_TOKENSTAT_FUNC } from '../helpers/helper'
-import { BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
+import { TransferEvent, ApprovalEvent, MintEvent, BurnEvent, FlashBorrowEvent } from '../types/schema'
+import { getEventId, saveTransaction, getUser } from '../helpers/helper'
+import { log } from "@graphprotocol/graph-ts";
+import { ONE_BI } from '../helpers/constants';
+import { saveStats } from '../helpers/tokenStatsHelper';
 
 
 
@@ -23,20 +25,16 @@ export function handleTransfer(networkEvent: Transfer): void {
   event.value = networkEvent.params.value;
   event.save();
 
-  let updateFrom = (data: TokenStat, values: BigInt[]): void => {
-    data.transferFromVolume = data.transferFromVolume.plus(new BigDecimal(values[0]));
-    data.transferFromTxCount = data.transferFromTxCount.plus(ONE_BI);
-    data.lastEventType = 'Transfer';
-  };
-  let updateTo = (data: TokenStat, values: BigInt[]): void => {
-    data.transferToVolume = data.transferToVolume.plus(new BigDecimal(values[0]));
-    data.transferToTxCount = data.transferToTxCount.plus(ONE_BI);
-    data.lastEventType = 'Transfer';
-  };
-
-  saveTokenStats('D', null, event.address, event.timestamp, [event.value], updateFrom, updateTo);
-  saveTokenStats('D', from, event.address, event.timestamp, [event.value], updateFrom, EMPTY_TOKENSTAT_FUNC);
-  saveTokenStats('D', to, event.address, event.timestamp, [event.value], updateTo, EMPTY_TOKENSTAT_FUNC);
+  saveStats(from, event.address, event.timestamp,  
+    'Transfer', 
+    ['transferFromVolume', 'transferFromTxCount'],
+    [event.value, ONE_BI]
+  );
+  saveStats(from, event.address, event.timestamp,  
+    'Transfer', 
+    ['transferToVolume', 'transferToTxCount'],
+    [event.value, ONE_BI]
+  );
 
   log.debug("handleTransfer done", []);
 }
@@ -58,20 +56,16 @@ export function handleApproval(networkEvent: Approval): void {
   event.value = networkEvent.params.value;
   event.save();
 
-  let updateOwner = (data: TokenStat, values: BigInt[]): void => {
-    data.approvalOwnerVolume = data.approvalOwnerVolume.plus(new BigDecimal(values[0]));
-    data.approvalOwnerTxCount = data.approvalOwnerTxCount.plus(ONE_BI);
-    data.lastEventType = 'Approval';
-  };
-  let updateSpender = (data: TokenStat, values: BigInt[]): void => {
-    data.approvalSpenderVolume = data.approvalSpenderVolume.plus(new BigDecimal(values[0]));
-    data.approvalSpenderTxCount = data.approvalSpenderTxCount.plus(ONE_BI);
-    data.lastEventType = 'Approval';
-  };
-
-  saveTokenStats('D', null, event.address, event.timestamp, [event.value], updateOwner, updateSpender);
-  saveTokenStats('D', owner, event.address, event.timestamp, [event.value], updateOwner, EMPTY_TOKENSTAT_FUNC);
-  saveTokenStats('D', spender, event.address, event.timestamp, [event.value], updateSpender, EMPTY_TOKENSTAT_FUNC);
+  saveStats(owner, event.address, event.timestamp,  
+    'Approval', 
+    ['approvalOwnerVolume', 'approvalOwnerTxCount'],
+    [event.value, ONE_BI]
+  );
+  saveStats(spender, event.address, event.timestamp,  
+    'Approval', 
+    ['approvalSpenderVolume', 'approvalSpenderTxCount'],
+    [event.value, ONE_BI]
+  );
 
   log.debug("handleApproval done", []);
 }
@@ -93,15 +87,11 @@ export function handleMint(networkEvent: Mint): void {
   event.price = networkEvent.params.price;
   event.save();
 
-  let update = (data: TokenStat, values: BigInt[]): void => {
-    data.mintTokenVolume = data.mintTokenVolume.plus(new BigDecimal(values[0]));
-    data.mintAssetVolume = data.mintAssetVolume.plus(new BigDecimal(values[1]));
-    data.mintTxCount = data.mintTxCount.plus(ONE_BI);
-    data.lastEventType = 'Mint';
-  };
-
-  saveTokenStats('D', null, event.address, event.timestamp, [event.tokenAmount, event.assetAmount], update, EMPTY_TOKENSTAT_FUNC);
-  saveTokenStats('D', minter, event.address, event.timestamp, [event.tokenAmount, event.assetAmount], update, EMPTY_TOKENSTAT_FUNC);
+  saveStats(minter, event.address, event.timestamp,  
+    'Mint', 
+    ['mintTokenVolume', 'mintAssetVolume', 'mintTxCount'],
+    [event.tokenAmount, event.assetAmount,  ONE_BI]
+  );
   log.debug("handleMint done", []);
 }
 
@@ -122,15 +112,11 @@ export function handleBurn(networkEvent: Burn): void {
   event.price = networkEvent.params.price;
   event.save();
 
-  let update = (data: TokenStat, values: BigInt[]): void => {
-    data.burnTokenVolume = data.burnTokenVolume.plus(new BigDecimal(values[0]));
-    data.burnAssetVolume = data.burnAssetVolume.plus(new BigDecimal(values[1]));
-    data.burnTxCount = data.burnTxCount.plus(ONE_BI);
-    data.lastEventType = 'Burn';
-  };
-
-  saveTokenStats('D', null, event.address, event.timestamp, [event.tokenAmount, event.assetAmount], update, EMPTY_TOKENSTAT_FUNC);
-  saveTokenStats('D', burner, event.address, event.timestamp, [event.tokenAmount, event.assetAmount], update, EMPTY_TOKENSTAT_FUNC);
+  saveStats(burner, event.address, event.timestamp,  
+    'Burn', 
+    ['burnTokenVolume', 'burnAssetVolume', 'burnTxCount'],
+    [event.tokenAmount, event.assetAmount,  ONE_BI]
+  );
   log.debug("handleMint done", []);
 }
 
@@ -151,14 +137,11 @@ export function handleFlashBorrow(networkEvent: FlashBorrow): void {
   event.loanAmount = networkEvent.params.loanAmount;
   event.save();
 
-  let update = (data: TokenStat, values: BigInt[]): void => {
-    data.flashBorrowVolume = data.flashBorrowVolume.plus(new BigDecimal(values[0]));
-    data.flashBorrowTxCount = data.burnTxCount.plus(ONE_BI);
-    data.lastEventType = 'FlashBorrow';
-  };
-
-  saveTokenStats('D', null, event.address, event.timestamp, [event.loanAmount], update, EMPTY_TOKENSTAT_FUNC);
-  saveTokenStats('D', borrower, event.address, event.timestamp, [event.loanAmount], update, EMPTY_TOKENSTAT_FUNC);
+  saveStats(borrower, event.address, event.timestamp,  
+    'FlashBorrow', 
+    ['flashBorrowVolume', 'flashBorrowTxCount'],
+    [event.loanAmount, ONE_BI]
+  );
   log.debug("handleFlashBorrow done", []);
 }
 

@@ -9,13 +9,13 @@ import {
     CloseWithDepositEvent,
     CloseWithSwapEvent,
     LiquidateEvent,
-    RolloverEvent,
-    LoanStat,
-    UserStat
+    RolloverEvent
 } from '../types/schema'
 
-import { getEventId, ONE_BI, saveTransaction, saveLoanStats, getLoanById, getUser, EMPTY_LOANSTAT_FUNC } from '../helpers/helper'
-import { BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
+import { getEventId, saveTransaction, getLoanById, getUser } from '../helpers/helper'
+import { log } from "@graphprotocol/graph-ts";
+import { ONE_BI } from '../helpers/constants';
+import { saveStats } from '../helpers/loanStatsHelper';
 
 
 export function handleCloseWithDeposit(networkEvent: CloseWithDeposit): void {
@@ -45,20 +45,17 @@ export function handleCloseWithDeposit(networkEvent: CloseWithDeposit): void {
     loan.closer = closer.id;
     loan.save();
 
-    let updateCloser = (data: LoanStat, values: BigInt[]): void => {
-        data.closeWithDepositRepayAmountCloserVolume = data.closeWithDepositRepayAmountCloserVolume.plus(new BigDecimal(values[0]));
-        data.closeWithDepositCloserTxCount = data.closeWithDepositCloserTxCount.plus(ONE_BI);
-        data.lastEventType = 'CloseWithDeposit';
-    };
-    let updateUser = (data: LoanStat, values: BigInt[]): void => {
-        data.closeWithDepositRepayAmountUserVolume = data.closeWithDepositRepayAmountUserVolume.plus(new BigDecimal(values[0]));
-        data.closeWithDepositUserTxCount = data.closeWithDepositUserTxCount.plus(ONE_BI);
-        data.lastEventType = 'CloseWithDeposit';
-    };
+    saveStats(closer, loan.loanToken, loan.collateralToken, event.timestamp,
+        'CloseWithDeposit',
+        ['closeWithDepositRepayAmountCloserVolume', 'closeWithDepositCloserTxCount'],
+        [event.repayAmount, ONE_BI]
+    );
 
-    saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.repayAmount], updateCloser, updateUser);
-    saveLoanStats('D', closer, loan.loanToken, loan.collateralToken, event.timestamp, [event.repayAmount], updateCloser, EMPTY_LOANSTAT_FUNC);
-    saveLoanStats('D', getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp, [event.repayAmount], updateUser, EMPTY_LOANSTAT_FUNC);
+    saveStats(getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp,
+        'CloseWithDeposit',
+        ['closeWithDepositRepayAmountUserVolume', 'closeWithDepositUserTxCount'],
+        [event.repayAmount, ONE_BI]
+    );
 
     log.debug("handleCloseWithDeposit done", []);
 }
@@ -91,24 +88,18 @@ export function handleCloseWithSwap(networkEvent: CloseWithSwap): void {
     loan.closer = closer.id;
     loan.save();
 
-    let updateCloser = (data: LoanStat, values: BigInt[]): void => {
-        data.closeWithSwapPositionCloseSizeCloserVolume = data.closeWithSwapPositionCloseSizeCloserVolume.plus(new BigDecimal(values[0]));
-        data.closeWithSwapLoanCloseAmountCloserVolume = data.closeWithSwapLoanCloseAmountCloserVolume.plus(new BigDecimal(values[1]));
-        data.closeWithSwapCloserTxCount = data.closeWithSwapCloserTxCount.plus(ONE_BI);
-        data.lastEventType = 'CloseWithSwap';
-    };
 
-    let updateUser = (data: LoanStat, values: BigInt[]): void => {
-        data.closeWithSwapPositionCloseSizeUserVolume = data.closeWithSwapPositionCloseSizeUserVolume.plus(new BigDecimal(values[0]));
-        data.closeWithSwapLoanCloseAmountUserVolume = data.closeWithSwapLoanCloseAmountUserVolume.plus(new BigDecimal(values[1]));
-        data.closeWithSwapUserTxCount = data.closeWithSwapUserTxCount.plus(ONE_BI);
-        data.lastEventType = 'CloseWithSwap';
-    };
+    saveStats(closer, loan.loanToken, loan.collateralToken, event.timestamp,
+        'CloseWithSwap',
+        ['closeWithSwapPositionCloseSizeCloserVolume', 'closeWithSwapLoanCloseAmountCloserVolume', 'closeWithSwapCloserTxCount'],
+        [event.positionCloseSize, event.loanCloseAmount, ONE_BI]
+    );
 
-    saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.positionCloseSize, event.loanCloseAmount], updateCloser, updateUser);
-    saveLoanStats('D', closer, loan.loanToken, loan.collateralToken, event.timestamp, [event.positionCloseSize, event.loanCloseAmount], updateCloser, EMPTY_LOANSTAT_FUNC);
-    saveLoanStats('D', getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp, [event.positionCloseSize, event.loanCloseAmount], updateUser, EMPTY_LOANSTAT_FUNC);
-
+    saveStats(getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp,
+        'CloseWithSwap',
+        ['closeWithSwapPositionCloseSizeUserVolume', 'closeWithSwapLoanCloseAmountUserVolume', 'closeWithSwapUserTxCount'],
+        [event.positionCloseSize, event.loanCloseAmount, ONE_BI]
+    );
     log.debug("handleCloseWithSwap done", []);
 }
 
@@ -139,22 +130,18 @@ export function handleLiquidate(networkEvent: Liquidate): void {
     loan.liquidator = liquidator.id;
     loan.save();
 
-    let updateLiquidator = (data: LoanStat, values: BigInt[]): void => {
-        data.liquidateRepayAmountLiquidatorVolume = data.liquidateRepayAmountLiquidatorVolume.plus(new BigDecimal(values[0]));
-        data.liquidateLiquidatorTxCount = data.liquidateLiquidatorTxCount.plus(ONE_BI);
-        data.lastEventType = 'Liquidate';
-    };
 
-    let updateUser = (data: LoanStat, values: BigInt[]): void => {
-        data.liquidateRepayAmountUserVolume = data.liquidateRepayAmountUserVolume.plus(new BigDecimal(values[0]));
-        data.liquidateUserTxCount = data.liquidateUserTxCount.plus(ONE_BI);
-        data.lastEventType = 'Liquidate';
-    };
+    saveStats(liquidator, loan.loanToken, loan.collateralToken, event.timestamp,
+        'Liquidate',
+        ['liquidateRepayAmountLiquidatorVolume', 'liquidateLiquidatorTxCount'],
+        [event.repayAmount, ONE_BI]
+    );
 
-    saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.repayAmount], updateLiquidator, updateUser);
-    saveLoanStats('D', liquidator, loan.loanToken, loan.collateralToken, event.timestamp, [event.repayAmount], updateLiquidator, EMPTY_LOANSTAT_FUNC);
-    saveLoanStats('D', getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp, [event.repayAmount], updateUser, EMPTY_LOANSTAT_FUNC);
-
+    saveStats(getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp,
+        'Liquidate',
+        ['liquidateRepayAmountUserVolume', 'liquidateUserTxCount'],
+        [event.repayAmount, ONE_BI]
+    );
 
     log.debug("handleLiquidate done", []);
 }
@@ -187,23 +174,17 @@ export function handleRollover(networkEvent: Rollover): void {
     loan.caller = caller.id;
     loan.save();
 
-    let updateCaller = (data: LoanStat, values: BigInt[]): void => {
-        data.rolloverCollateralAmountUsedCallerVolume = data.rolloverCollateralAmountUsedCallerVolume.plus(new BigDecimal(values[0]));
-        data.rolloverInterestAmountAddedCallerVolume = data.rolloverInterestAmountAddedCallerVolume.plus(new BigDecimal(values[1]));
-        data.rolloverCallerTxCount = data.rolloverCallerTxCount.plus(ONE_BI);
-        data.lastEventType = 'Rollover';
-    };
+    saveStats(caller, loan.loanToken, loan.collateralToken, event.timestamp,
+        'Rollover',
+        ['closeWithSwapPositionCloseSizeCloserVolume', 'closeWithSwapLoanCloseAmountCloserVolume', 'closeWithSwapCloserTxCount'],
+        [event.collateralAmountUsed, event.interestAmountAdded, ONE_BI]
+    );
 
-    let updateUser = (data: LoanStat, values: BigInt[]): void => {
-        data.rolloverCollateralAmountUsedUserVolume = data.rolloverCollateralAmountUsedUserVolume.plus(new BigDecimal(values[0]));
-        data.rolloverInterestAmountAddedUserVolume = data.rolloverInterestAmountAddedUserVolume.plus(new BigDecimal(values[1]));
-        data.rolloverUserTxCount = data.rolloverUserTxCount.plus(ONE_BI);
-        data.lastEventType = 'Rollover';
-    };
-
-    saveLoanStats('D', null, loan.loanToken, loan.collateralToken, event.timestamp, [event.collateralAmountUsed, event.interestAmountAdded], updateCaller, updateUser);
-    saveLoanStats('D', caller, loan.loanToken, loan.collateralToken, event.timestamp, [event.collateralAmountUsed, event.interestAmountAdded], updateCaller, EMPTY_LOANSTAT_FUNC);
-    saveLoanStats('D', getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp, [event.collateralAmountUsed, event.interestAmountAdded], updateUser, EMPTY_LOANSTAT_FUNC);
+    saveStats(getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp,
+        'Rollover',
+        ['rolloverCollateralAmountUsedUserVolume', 'rolloverInterestAmountAddedUserVolume', 'rolloverUserTxCount'],
+        [event.collateralAmountUsed, event.interestAmountAdded, ONE_BI]
+    );
 
     log.debug("handleRollover done", []);
 }
