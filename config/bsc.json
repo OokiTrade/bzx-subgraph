@@ -156,6 +156,23 @@
           "handler": "handleApproval"
         }
       ]
+    },
+    {
+      "name": "BGOV",
+      "address": "0xf8E026dC4C0860771f691EcFFBbdfe2fa51c77CF",
+      "abi": "Token",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        }
+      ]
     }
   ],
 
