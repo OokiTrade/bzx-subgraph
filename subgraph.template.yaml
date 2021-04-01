@@ -47,13 +47,14 @@ dataSources:
         - name: {{abi}}
           file: ./abis/{{abi}}.json
       entities:
-          - TransferEvent
-          - ApprovalEvent
+          {{#entities}}
+          - {{entity}}
+          {{/entities}}
       eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
+        {{#entities}}
+        - event: {{event}}
+          handler: {{handler}}
+        {{/entities}}
   {{/tokens}}
   {{#itokens}}
   - kind: ethereum/contract
@@ -72,22 +73,14 @@ dataSources:
         - name: {{abi}}
           file: ./abis/{{abi}}.json
       entities:
-          - TransferEvent
-          - ApprovalEvent
-          - MintEvent
-          - BurnEvent
-          - FlashBorrow
+          {{#entities}}
+          - {{entity}}
+          {{/entities}}
       eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
-        - event: Mint(indexed address,uint256,uint256,uint256)
-          handler: handleMint
-        - event: Burn(indexed address,uint256,uint256,uint256)
-          handler: handleBurn
-        - event: FlashBorrow(address,address,address,uint256)
-          handler: handleFlashBorrow
+        {{#entities}}
+        - event: {{event}}
+          handler: {{handler}}
+        {{/entities}}
   {{/itokens}}
   {{#staking}}
   - kind: ethereum/contract
@@ -115,3 +108,29 @@ dataSources:
           handler: {{handler}}
         {{/entities}}
   {{/staking}}
+  {{#farming}}
+  - kind: ethereum/contract
+    name: {{name}}
+    network: {{network}}
+    source:
+      address: '{{address}}'
+      abi: {{name}}
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/{{abi}}.ts
+      abis:
+        - name: {{abi}}
+          file: ./abis/{{abi}}.json
+      entities:
+          {{#entities}}
+          - {{entity}}
+          {{/entities}}
+      eventHandlers:
+        {{#entities}}
+        - event: {{event}}
+          handler: {{handler}}
+        {{/entities}}
+  {{/farming}}

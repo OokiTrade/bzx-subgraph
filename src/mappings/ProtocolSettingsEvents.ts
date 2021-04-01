@@ -5,9 +5,9 @@ import {
 } from '../types/ProtocolSettingsEvents/ProtocolSettingsEvents'
 
 import {
-  WithdrawLendingFeesEvent,
-  WithdrawTradingFeesEvent,
-  WithdrawBorrowingFeesEvent
+  ProtocolWithdrawLendingFeesEvent,
+  ProtocolWithdrawTradingFeesEvent,
+  ProtocolWithdrawBorrowingFeesEvent
 } from '../types/schema'
 
 import { getEventId, saveTransaction, getUser } from '../helpers/helper'
@@ -18,7 +18,7 @@ import { saveStats } from '../helpers/feesStatsHelper';
 
 export function handleWithdrawLendingFees(networkEvent: WithdrawLendingFees): void {
   log.info("handleWithdrawLendingFees: Start processing event: {}", [networkEvent.logIndex.toString()]);
-  let event = new WithdrawLendingFeesEvent(
+  let event = new ProtocolWithdrawLendingFeesEvent(
     getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
   );
   let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -50,7 +50,7 @@ export function handleWithdrawLendingFees(networkEvent: WithdrawLendingFees): vo
 
 export function handleWithdrawTradingFees(networkEvent: WithdrawTradingFees): void {
   log.info("handleWithdrawTradingFees: Start processing event: {}", [networkEvent.logIndex.toString()]);
-  let event = new WithdrawTradingFeesEvent(
+  let event = new ProtocolWithdrawTradingFeesEvent(
     getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
   );
   let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -83,7 +83,7 @@ export function handleWithdrawTradingFees(networkEvent: WithdrawTradingFees): vo
 
 export function handleWithdrawBorrowingFees(networkEvent: WithdrawBorrowingFees): void {
   log.info("handleWithdrawBorrowingFees: Start processing event: {}", [networkEvent.logIndex.toString()]);
-  let event = new WithdrawBorrowingFeesEvent(
+  let event = new ProtocolWithdrawBorrowingFeesEvent(
     getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
   );
   let tx = saveTransaction(networkEvent.transaction, networkEvent.block);

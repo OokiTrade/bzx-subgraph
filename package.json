@@ -5,6 +5,8 @@
     "build": "graph build --debug",
     "prepare:mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
     "prepare:mainnet-test": "mustache config/mainnet-test.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:bsc": "mustache config/bsc.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:bsc-test": "mustache config/bsc-test.json subgraph.template.yaml > subgraph.yaml",
     "prepare:kovan": "mustache config/kovan.json subgraph.template.yaml > subgraph.yaml",
     "codegen": "graph codegen --debug --output-dir src/types/"
   },

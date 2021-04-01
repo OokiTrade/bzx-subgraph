@@ -7,11 +7,11 @@ import {
 } from '../types/FeesEvents/FeesEvents'
 
 import {
-    PayLendingFeeEvent,
-    SettleFeeRewardForInterestExpenseEvent,
-    PayTradingFeeEvent,
-    PayBorrowingFeeEvent,
-    EarnRewardEvent
+    ProtocolPayLendingFeeEvent,
+    ProtocolSettleFeeRewardForInterestExpenseEvent,
+    ProtocolPayTradingFeeEvent,
+    ProtocolPayBorrowingFeeEvent,
+    ProtocolEarnRewardEvent
 
 } from '../types/schema'
 
@@ -30,7 +30,7 @@ const FeesTypes = [
 export function handlePayLendingFee(networkEvent: PayLendingFee): void {
     log.info("handlePayLendingFee: Start processing event: {}", [networkEvent.logIndex.toString()]);
 
-    let event = new PayLendingFeeEvent(
+    let event = new ProtocolPayLendingFeeEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -62,7 +62,7 @@ export function handleSettleFeeRewardForInterestExpense(networkEvent: SettleFeeR
         return;
     }
 
-    let event = new SettleFeeRewardForInterestExpenseEvent(
+    let event = new ProtocolSettleFeeRewardForInterestExpenseEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -95,7 +95,7 @@ export function handlePayTradingFee(networkEvent: PayTradingFee): void {
         return;
     }
 
-    let event = new PayTradingFeeEvent(
+    let event = new ProtocolPayTradingFeeEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -127,7 +127,7 @@ export function handlePayBorrowingFee(networkEvent: PayBorrowingFee): void {
         return;
     }
 
-    let event = new PayBorrowingFeeEvent(
+    let event = new ProtocolPayBorrowingFeeEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -158,7 +158,7 @@ export function handlEarnReward(networkEvent: EarnReward): void {
         return;
     }
 
-    let event = new EarnRewardEvent(
+    let event = new ProtocolEarnRewardEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);

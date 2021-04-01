@@ -7,11 +7,11 @@ import {
 } from '../types/LoanMaintenanceEvents/LoanMaintenanceEvents'
 
 import {
-    DepositCollateralEvent,
-    WithdrawCollateralEvent,
-    ExtendLoanDurationEvent,
-    ReduceLoanDurationEvent,
-    ClaimRewardEvent
+    ProtocolDepositCollateralEvent,
+    ProtocolWithdrawCollateralEvent,
+    ProtocolExtendLoanDurationEvent,
+    ProtocolReduceLoanDurationEvent,
+    ProtocolClaimRewardEvent
 } from '../types/schema'
 
 import { getEventId, saveTransaction, getLoanById, getUser } from '../helpers/helper'
@@ -22,7 +22,7 @@ import { saveStats } from '../helpers/loanStatsHelper';
 
 export function handleDepositCollateral(networkEvent: DepositCollateral): void {
     log.info("handleDepositCollateral: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new DepositCollateralEvent(
+    let event = new ProtocolDepositCollateralEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
 
@@ -34,7 +34,8 @@ export function handleDepositCollateral(networkEvent: DepositCollateral): void {
 
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
-    let user = getUser(loan.user, timestamp);
+    let user = getUser(networkEvent.params.user.toHex(), timestamp);
+    event.user = user.id;
     event.loan = loan.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
@@ -54,7 +55,7 @@ export function handleDepositCollateral(networkEvent: DepositCollateral): void {
 
 export function handleWithdrawCollateral(networkEvent: WithdrawCollateral): void {
     log.info("handleWithdrawCollateral: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new WithdrawCollateralEvent(
+    let event = new ProtocolWithdrawCollateralEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
 
@@ -66,7 +67,8 @@ export function handleWithdrawCollateral(networkEvent: WithdrawCollateral): void
 
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
-    let user = getUser(loan.user, timestamp);
+    let user = getUser(networkEvent.params.user.toHex(), timestamp);
+    event.user = user.id;
     event.loan = loan.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
@@ -86,7 +88,7 @@ export function handleWithdrawCollateral(networkEvent: WithdrawCollateral): void
 
 export function handleExtendLoanDuration(networkEvent: ExtendLoanDuration): void {
     log.info("handlextendLoanDuration: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new ExtendLoanDurationEvent(
+    let event = new ProtocolExtendLoanDurationEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
 
@@ -98,7 +100,8 @@ export function handleExtendLoanDuration(networkEvent: ExtendLoanDuration): void
 
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
-    let user = getUser(loan.user, timestamp);
+    let user = getUser(networkEvent.params.user.toHex(), timestamp);
+    event.user = user.id;
     event.loan = loan.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
@@ -119,7 +122,7 @@ export function handleExtendLoanDuration(networkEvent: ExtendLoanDuration): void
 
 export function handleReduceLoanDuration(networkEvent: ReduceLoanDuration): void {
     log.info("handleReduceLoanDuration: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new ReduceLoanDurationEvent(
+    let event = new ProtocolReduceLoanDurationEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
 
@@ -131,8 +134,11 @@ export function handleReduceLoanDuration(networkEvent: ReduceLoanDuration): void
 
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
-    let user = getUser(loan.user, timestamp);
+
+
+    let user = getUser(networkEvent.params.user.toHex(), timestamp);
     event.loan = loan.id;
+    event.user = user.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
@@ -153,7 +159,7 @@ export function handleReduceLoanDuration(networkEvent: ReduceLoanDuration): void
 
 export function handleClaimReward(networkEvent: ClaimReward): void {
     log.info("handleClaimReward: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new ClaimRewardEvent(
+    let event = new ProtocolClaimRewardEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);

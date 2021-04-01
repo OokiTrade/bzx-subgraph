@@ -8,12 +8,12 @@ import {
 } from '../types/StakingConstants/StakingConstants'
 
 import {
-    StakeEvent,
-    UnstakeEvent,
-    AddRewardsEvent,
-    ClaimEvent,
-    ConvertFeesEvent,
-    DistributeFeesEvent
+    StakingStakeEvent,
+    StakingUnstakeEvent,
+    StakingAddRewardsEvent,
+    StakingClaimEvent,
+    StakingConvertFeesEvent,
+    StakingDistributeFeesEvent
 } from '../types/schema'
 
 import { getEventId, saveTransaction, getUser } from '../helpers/helper'
@@ -25,7 +25,7 @@ import { saveStats as saveStakingStats } from '../helpers/stakingStatsHelper';
 
 export function handleStake(networkEvent: Stake): void {
     log.info("handleStake: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new StakeEvent(
+    let event = new StakingStakeEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -51,7 +51,7 @@ export function handleStake(networkEvent: Stake): void {
 
 export function handleUnstake(networkEvent: Unstake): void {
     log.info("handleUnstake: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new UnstakeEvent(
+    let event = new StakingUnstakeEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -77,7 +77,7 @@ export function handleUnstake(networkEvent: Unstake): void {
 
 export function handleAddRewards(networkEvent: AddRewards): void {
     log.info("handleAddRewards: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new AddRewardsEvent(
+    let event = new StakingAddRewardsEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -103,7 +103,7 @@ export function handleAddRewards(networkEvent: AddRewards): void {
 
 export function handleClaim(networkEvent: Claim): void {
     log.info("handleClaim: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new ClaimEvent(
+    let event = new StakingClaimEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -128,7 +128,7 @@ export function handleClaim(networkEvent: Claim): void {
 
 export function handleConvertFees(networkEvent: ConvertFees): void {
     log.info("handleConvertFees: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new ConvertFeesEvent(
+    let event = new StakingConvertFeesEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -153,7 +153,7 @@ export function handleConvertFees(networkEvent: ConvertFees): void {
 
 export function handleDistributeFees(networkEvent: DistributeFees): void {
     log.info("handleCDistributeFeesFees: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new DistributeFeesEvent(
+    let event = new StakingDistributeFeesEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);

@@ -42,6 +42,7 @@ function getNewStat(type: string, timeStamp: i32, user: User, token: string): To
     statsData.burnTxCount = ZERO_BI
     statsData.flashBorrowTxCount = ZERO_BI
 
+
     return statsData as TokenStat;
 }
 function getStatById(type: string, eventTimeStamp: i32, user: User, token: string): TokenStat {

@@ -7,6 +7,16 @@ export function isString(obj): boolean {
   return (Object.prototype.toString.call(obj) === '[object String]');
 }
 
+
+// export function initFromEthereumEvent (src: ethereum.Event, dst: AbstractEvent):void{
+//   let tx = saveTransaction(src.transaction, src.block);
+//   let timestamp = src.block.timestamp.toI32();
+//   dst.timestamp = timestamp;
+//   dst.transaction = tx.id;
+//   dst.address = src.address.toHex();
+// }
+
+
 export function addValues(stats: Entity, keys: string[], values: BigInt[]): void {
   for (let i = 0; i < keys.length; i++) {
     let key = keys[i];
@@ -54,15 +64,13 @@ export function saveTransaction(transaction: ethereum.Transaction, block: ethere
   return tx as Transaction;
 }
 
-export function saveLoan(id: string, loanToken: string, collateralToken: string, user: User, lender: User): Loan {
+export function saveLoan(id: string, loanToken: string, collateralToken: string): Loan {
   log.info("saveLoan: Start {} {}/{}", [id, loanToken, collateralToken]);
   let loan = Loan.load(id);
   if (loan) return loan as Loan;
   loan = new Loan(id);
   loan.loanToken = loanToken;
   loan.collateralToken = collateralToken;
-  loan.user = user.id;
-  loan.lender = lender.id;
   loan.save();
   log.debug("saveLoan: Done {} {}/{}", [id, loanToken, collateralToken]);
   return loan as Loan;
@@ -81,8 +89,8 @@ export function getUser(id: string, timestamp: i32): User {
   user.save();
 
   saveUserStats(timestamp,
-    ['newUserCount', 'accumulatedUserCount'],
-    [ONE_BI, ONE_BI]
+    ['newUserCount'],
+    [ONE_BI]
   );
   return user;
 
@@ -104,7 +112,6 @@ function getNewUserStat(type: string, dayStartTimestamp: i32): UserStat {
   if (dayStartTimestamp) statsData.date = dayStartTimestamp
   statsData.type = type;
   statsData.newUserCount = ZERO_BI;
-  statsData.accumulatedUserCount = ZERO_BI;
 
   return statsData as UserStat;
 }
@@ -123,11 +130,22 @@ export function saveUserStats(eventTimeStamp: i32,
   log.debug("UserStat: Start saving statistic", []);
   let total = getStatById("T", 0);
   let accumulated = getStatById("A", eventTimeStamp);
+  let daily = getStatById("D", eventTimeStamp);
 
   addValues(total, keys, values);
   total.save();
   copyValues(total, accumulated, keys);
   accumulated.save();
 
+
+  addValues(total, keys, values);
+  addValues(daily, keys, values);
+  
+    total.save();
+    copyValues(total, accumulated, keys);
+    accumulated.save();
+
+    daily.accumulated = accumulated.id;
+    daily.save();
   log.debug("UserStat: Done saving statistic", []);
 };

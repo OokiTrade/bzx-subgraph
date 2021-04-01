@@ -1,5 +1,5 @@
 //../types/iBZRX/iToken is used for all iTokens
-import { Transfer, Approval, Mint, Burn, FlashBorrow } from '../types/iBZRX/iToken'
+import { Transfer, Approval, Mint, Burn, FlashBorrow } from '../types/iETH/iToken'
 import { TransferEvent, ApprovalEvent, MintEvent, BurnEvent, FlashBorrowEvent } from '../types/schema'
 import { getEventId, saveTransaction, getUser } from '../helpers/helper'
 import { log } from "@graphprotocol/graph-ts";

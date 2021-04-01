@@ -4,8 +4,8 @@ import {
 } from '../types/LoanOpeningsEvents/LoanOpeningsEvents'
 
 import {
-    BorrowEvent,
-    TradeEvent
+    ProtocolBorrowEvent,
+    ProtocolTradeEvent
 } from '../types/schema'
 
 import { getEventId, saveTransaction, saveLoan, getUser } from '../helpers/helper'
@@ -16,7 +16,7 @@ import { saveStats } from '../helpers/loanStatsHelper';
 
 export function handleBorrow(networkEvent: Borrow): void {
     log.info("handleBorrow: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new BorrowEvent(
+    let event = new ProtocolBorrowEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -25,10 +25,12 @@ export function handleBorrow(networkEvent: Borrow): void {
     let lender = getUser(networkEvent.params.lender.toHex(), timestamp);
     let loan = saveLoan(networkEvent.params.loanId.toHex(),
         networkEvent.params.loanToken.toHex(),
-        networkEvent.params.collateralToken.toHex(),
-        user, lender
+        networkEvent.params.collateralToken.toHex()
     );
 
+
+    event.user = user.id;
+    event.lender = lender.id;
     event.loan = loan.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
@@ -51,7 +53,7 @@ export function handleBorrow(networkEvent: Borrow): void {
 
 export function handleTrade(networkEvent: Trade): void {
     log.info("handleTrade: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new TradeEvent(
+    let event = new ProtocolTradeEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
@@ -60,9 +62,10 @@ export function handleTrade(networkEvent: Trade): void {
     let lender = getUser(networkEvent.params.lender.toHex(), timestamp);
     let loan = saveLoan(networkEvent.params.loanId.toHex(),
         networkEvent.params.loanToken.toHex(),
-        networkEvent.params.collateralToken.toHex(),
-        user, lender
+        networkEvent.params.collateralToken.toHex()
     );
+    event.user = user.id;
+    event.lender = lender.id;
     event.loan = loan.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();

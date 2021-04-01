@@ -6,10 +6,10 @@ import {
 } from '../types/LoanClosingsEvents/LoanClosingsEvents'
 
 import {
-    CloseWithDepositEvent,
-    CloseWithSwapEvent,
-    LiquidateEvent,
-    RolloverEvent
+    ProtocolCloseWithDepositEvent,
+    ProtocolCloseWithSwapEvent,
+    ProtocolLiquidateEvent,
+    ProtocolRolloverEvent
 } from '../types/schema'
 
 import { getEventId, saveTransaction, getLoanById, getUser } from '../helpers/helper'
@@ -20,7 +20,7 @@ import { saveStats } from '../helpers/loanStatsHelper';
 
 export function handleCloseWithDeposit(networkEvent: CloseWithDeposit): void {
     log.info("handleCloseWithDeposit: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new CloseWithDepositEvent(
+    let event = new ProtocolCloseWithDepositEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let loan = getLoanById(networkEvent.params.loanId.toHex());
@@ -28,9 +28,13 @@ export function handleCloseWithDeposit(networkEvent: CloseWithDeposit): void {
         log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
         return;
     }
-
-    let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
+    let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
+    let closer = getUser(networkEvent.params.closer.toHex(), timestamp);
+    let user = getUser(networkEvent.params.user.toHex(), timestamp);
+   
+    event.user = user.id;
+    event.closer = closer.id;
     event.loan = loan.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
@@ -41,17 +45,13 @@ export function handleCloseWithDeposit(networkEvent: CloseWithDeposit): void {
     event.currentMargin = networkEvent.params.currentMargin;
     event.save();
 
-    let closer = getUser(networkEvent.params.closer.toHex(), timestamp);
-    loan.closer = closer.id;
-    loan.save();
-
     saveStats(closer, loan.loanToken, loan.collateralToken, event.timestamp,
         'CloseWithDeposit',
         ['closeWithDepositRepayAmountCloserVolume', 'closeWithDepositCloserTxCount'],
         [event.repayAmount, ONE_BI]
     );
 
-    saveStats(getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp,
+    saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
         'CloseWithDeposit',
         ['closeWithDepositRepayAmountUserVolume', 'closeWithDepositUserTxCount'],
         [event.repayAmount, ONE_BI]
@@ -62,7 +62,7 @@ export function handleCloseWithDeposit(networkEvent: CloseWithDeposit): void {
 
 export function handleCloseWithSwap(networkEvent: CloseWithSwap): void {
     log.info("handleCloseWithSwap: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new CloseWithSwapEvent(
+    let event = new ProtocolCloseWithSwapEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
 
@@ -74,6 +74,10 @@ export function handleCloseWithSwap(networkEvent: CloseWithSwap): void {
 
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
+    let closer = getUser(networkEvent.params.closer.toHex(), timestamp);
+    let user = getUser(networkEvent.params.user.toHex(), timestamp);
+    event.user = user.id;
+    event.closer = closer.id;
     event.loan = networkEvent.params.loanId.toHex();
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
@@ -84,10 +88,6 @@ export function handleCloseWithSwap(networkEvent: CloseWithSwap): void {
     event.currentLeverage = networkEvent.params.currentLeverage;
     event.save();
 
-    let closer = getUser(networkEvent.params.closer.toHex(), timestamp);
-    loan.closer = closer.id;
-    loan.save();
-
 
     saveStats(closer, loan.loanToken, loan.collateralToken, event.timestamp,
         'CloseWithSwap',
@@ -95,7 +95,7 @@ export function handleCloseWithSwap(networkEvent: CloseWithSwap): void {
         [event.positionCloseSize, event.loanCloseAmount, ONE_BI]
     );
 
-    saveStats(getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp,
+    saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
         'CloseWithSwap',
         ['closeWithSwapPositionCloseSizeUserVolume', 'closeWithSwapLoanCloseAmountUserVolume', 'closeWithSwapUserTxCount'],
         [event.positionCloseSize, event.loanCloseAmount, ONE_BI]
@@ -105,7 +105,7 @@ export function handleCloseWithSwap(networkEvent: CloseWithSwap): void {
 
 export function handleLiquidate(networkEvent: Liquidate): void {
     log.info("handleLiquidate: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new LiquidateEvent(
+    let event = new ProtocolLiquidateEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
     let loan = getLoanById(networkEvent.params.loanId.toHex());
@@ -117,6 +117,10 @@ export function handleLiquidate(networkEvent: Liquidate): void {
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     event.loan = networkEvent.params.loanId.toHex();
+    let liquidator = getUser(networkEvent.params.liquidator.toHex(), timestamp);
+    let user = getUser(networkEvent.params.user.toHex(), timestamp);
+    event.user = user.id;
+    event.liquidator = liquidator.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
@@ -126,18 +130,13 @@ export function handleLiquidate(networkEvent: Liquidate): void {
     event.currentMargin = networkEvent.params.currentMargin;
     event.save();
 
-    let liquidator = getUser(networkEvent.params.liquidator.toHex(), timestamp);
-    loan.liquidator = liquidator.id;
-    loan.save();
-
-
     saveStats(liquidator, loan.loanToken, loan.collateralToken, event.timestamp,
         'Liquidate',
         ['liquidateRepayAmountLiquidatorVolume', 'liquidateLiquidatorTxCount'],
         [event.repayAmount, ONE_BI]
     );
 
-    saveStats(getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp,
+    saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
         'Liquidate',
         ['liquidateRepayAmountUserVolume', 'liquidateUserTxCount'],
         [event.repayAmount, ONE_BI]
@@ -148,7 +147,7 @@ export function handleLiquidate(networkEvent: Liquidate): void {
 
 export function handleRollover(networkEvent: Rollover): void {
     log.info("handleRollover: Start processing event: {}", [networkEvent.logIndex.toString()]);
-    let event = new RolloverEvent(
+    let event = new ProtocolRolloverEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
 
@@ -157,9 +156,13 @@ export function handleRollover(networkEvent: Rollover): void {
         log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
         return;
     }
-
-    let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
+    let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
+    let caller = getUser(networkEvent.params.caller.toHex(), timestamp);
+    let user =  getUser(networkEvent.params.user.toHex(), timestamp);
+    
+    event.caller = caller.id;
+    event.user = user.id;
     event.loan = networkEvent.params.loanId.toHex();
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
@@ -170,17 +173,13 @@ export function handleRollover(networkEvent: Rollover): void {
     event.gasRebate = networkEvent.params.gasRebate;
     event.save();
 
-    let caller = getUser(networkEvent.params.caller.toHex(), timestamp);
-    loan.caller = caller.id;
-    loan.save();
-
     saveStats(caller, loan.loanToken, loan.collateralToken, event.timestamp,
         'Rollover',
         ['closeWithSwapPositionCloseSizeCloserVolume', 'closeWithSwapLoanCloseAmountCloserVolume', 'closeWithSwapCloserTxCount'],
         [event.collateralAmountUsed, event.interestAmountAdded, ONE_BI]
     );
 
-    saveStats(getUser(loan.user, timestamp), loan.loanToken, loan.collateralToken, event.timestamp,
+    saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
         'Rollover',
         ['rolloverCollateralAmountUsedUserVolume', 'rolloverInterestAmountAddedUserVolume', 'rolloverUserTxCount'],
         [event.collateralAmountUsed, event.interestAmountAdded, ONE_BI]
