@@ -175,7 +175,7 @@ export function handleRollover(networkEvent: Rollover): void {
 
     saveStats(caller, loan.loanToken, loan.collateralToken, event.timestamp,
         'Rollover',
-        ['closeWithSwapPositionCloseSizeCloserVolume', 'closeWithSwapLoanCloseAmountCloserVolume', 'closeWithSwapCloserTxCount'],
+        ['rolloverCollateralAmountUsedCallerVolume', 'rolloverInterestAmountAddedCallerVolume', 'rolloverCallerTxCount'],
         [event.collateralAmountUsed, event.interestAmountAdded, ONE_BI]
     );
 

@@ -1,16 +1,13 @@
 import { StakingStat, User } from "../types/schema";
 import { EMPTY_STRING, ZERO_BD, ZERO_BI } from "./constants";
-import { copyValues, addValues } from "./helper";
+import {  addValues } from "./helper";
 
 import { BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
 
 function getStatId(type: string, timeStamp: i32, user: User): string {
-    let id = type
-        + ((timeStamp > 0) ? ('-' + timeStamp.toString()) : EMPTY_STRING)
-        + ((user) ? ('-' + user.id) : EMPTY_STRING)
-        + 'StakingStat'
-
-    return crypto.keccak256(ByteArray.fromUTF8(id)).toHex();
+    let id = ((user) ? ('-' + user.id) : EMPTY_STRING)
+    
+    return timeStamp.toString()+'#'+type+crypto.keccak256(ByteArray.fromUTF8(id)).toHex();
 
 }
 
@@ -38,7 +35,7 @@ function getNewStat(type: string, timeStamp: i32, user: User): StakingStat {
 
     return statsData as StakingStat;
 }
-function getStatById(type: string, eventTimeStamp: i32, from: User, token: string): StakingStat {
+function getStatById(type: string, eventTimeStamp: i32, from: User): StakingStat {
     let dayStartTimestamp = eventTimeStamp / 86400;
 
     let id = getStatId(type, dayStartTimestamp, from);
@@ -53,24 +50,21 @@ export function saveStats(user: User, eventTimeStamp: i32,
 ): void {
     log.debug("StakingStat: Start saving statistic", []);
 
-    let total = getStatById("T", 0, null, null);
-    let totalPerUser = getStatById("T", 0, user, null);
+    let total = getStatById("T", 0, null);
+    let totalPerUser = getStatById("T", 0, user);
 
-    let accumulated = getStatById("A", eventTimeStamp, null, null);
-    let accumulatedPerUser = getStatById("A", eventTimeStamp, user, null);
+    let daily = getStatById("D", eventTimeStamp, null);
+    let dailyPerUser = getStatById("D", eventTimeStamp, user);
 
-    let daily = getStatById("D", eventTimeStamp, null, null);
-    let dailyPerUser = getStatById("D", eventTimeStamp, user, null);
+    let accumulatedId = getStatId("A", daily.date, null);
+    let accumulatedPerUserId = getStatId("A", dailyPerUser.date, user);
 
 
     total.lastEventTimeStamp = eventTimeStamp;
     total.lastEventType = lastEventType;
     totalPerUser.lastEventTimeStamp = eventTimeStamp;
     totalPerUser.lastEventType = lastEventType;
-    accumulated.lastEventTimeStamp = eventTimeStamp;
-    accumulated.lastEventType = lastEventType;
-    accumulatedPerUser.lastEventTimeStamp = eventTimeStamp;
-    accumulatedPerUser.lastEventType = lastEventType;
+    
     daily.lastEventTimeStamp = eventTimeStamp;
     daily.lastEventType = lastEventType;
     dailyPerUser.lastEventTimeStamp = eventTimeStamp;
@@ -80,18 +74,20 @@ export function saveStats(user: User, eventTimeStamp: i32,
     addValues(totalPerUser, keys, values);
     addValues(daily, keys, values);
     addValues(dailyPerUser, keys, values);
-
-
     total.save();
     totalPerUser.save();
 
-    copyValues(total, accumulated, keys);
-    copyValues(totalPerUser, accumulatedPerUser, keys);
-    accumulated.save();
-    accumulatedPerUser.save();
+    total.id = accumulatedId;
+    totalPerUser.id = accumulatedPerUserId;
+    total.type = "A";
+    totalPerUser.type = "A";
+    total.date = daily.date;
+    totalPerUser.date = daily.date;
+    total.save();
+    totalPerUser.save();
 
-    daily.accumulated = accumulated.id;
-    dailyPerUser.accumulated = accumulatedPerUser.id;
+    daily.accumulated = accumulatedId;
+    dailyPerUser.accumulated = accumulatedPerUserId;
     daily.save();
     dailyPerUser.save();
 

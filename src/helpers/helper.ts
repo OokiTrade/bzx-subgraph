@@ -21,6 +21,11 @@ export function addValues(stats: Entity, keys: string[], values: BigInt[]): void
   for (let i = 0; i < keys.length; i++) {
     let key = keys[i];
     let value = stats.get(key);
+    if(values[i].toString()==='0') {
+      log.debug("Skip adding 0 value", [])
+      continue;
+    }
+
     if (value.kind === ValueKind.BIGDECIMAL) {
       value.data = values[i].toBigDecimal().plus(value.toBigDecimal()) as u64;
     }
@@ -37,13 +42,6 @@ export function addValues(stats: Entity, keys: string[], values: BigInt[]): void
   }
 }
 
-export function copyValues(src: Entity, dst: Entity, keys: string[]): void {
-  for (let i = 0; i < keys.length; i++) {
-    let key = keys[i];
-    let srcValue = src.get(key);
-    dst.set(key, srcValue as Value);
-  }
-}
 
 
 export function getEventId(hash: Bytes, index: BigInt): string {
@@ -97,11 +95,7 @@ export function getUser(id: string, timestamp: i32): User {
 }
 
 function getUserStatId(type: string, timeStamp: i32): string {
-  let id = type
-    + ((timeStamp > 0) ? ('-' + timeStamp.toString()) : EMPTY_STRING)
-    + 'UserStat'
-
-  return crypto.keccak256(ByteArray.fromUTF8(id)).toHex();
+  return timeStamp.toString()+'#'+type;
 
 }
 
@@ -133,17 +127,11 @@ export function saveUserStats(eventTimeStamp: i32,
   let daily = getStatById("D", eventTimeStamp);
 
   addValues(total, keys, values);
-  total.save();
-  copyValues(total, accumulated, keys);
-  accumulated.save();
-
-
-  addValues(total, keys, values);
   addValues(daily, keys, values);
-  
-    total.save();
-    copyValues(total, accumulated, keys);
-    accumulated.save();
+  total.save();
+  accumulated.date = daily.date;
+  accumulated.newUserCount = total.newUserCount;
+  accumulated.save();  
 
     daily.accumulated = accumulated.id;
     daily.save();

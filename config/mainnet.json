@@ -1,6 +1,6 @@
 {
   "network": "mainnet",
-  "startBlock": 0,
+  "startBlock": 10600000,
   "farming":[
     
   ],

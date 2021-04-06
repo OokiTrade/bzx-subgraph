@@ -728,7 +728,6 @@ type LoanStat @entity {
 
 type User @entity {
   id: ID!
-
 }
 
 type UserStat @entity {

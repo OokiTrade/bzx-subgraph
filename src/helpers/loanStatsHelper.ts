@@ -1,18 +1,15 @@
 import {  LoanStat, User } from "../types/schema";
 import { EMPTY_STRING, ZERO_BD, ZERO_BI } from "./constants";
-import { copyValues, addValues } from "./helper";
+import {  addValues } from "./helper";
 
 import { BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
 
 function getStatId(type: string, timeStamp: i32, from: User, loanToken: string, collateralToken: string): string {
-    let id = type
-        + ((timeStamp > 0) ? ('-' + timeStamp.toString()) : EMPTY_STRING)
-        + ((from) ? ('-' + from.id) : EMPTY_STRING)
+    let id = ((from) ? ('-' + from.id) : EMPTY_STRING)
         + ((loanToken) ? ('-' + loanToken) : EMPTY_STRING)
         + ((collateralToken) ? ('-' + collateralToken) : EMPTY_STRING)
-        + 'LoanStat'
 
-    return crypto.keccak256(ByteArray.fromUTF8(id)).toHex();
+    return timeStamp.toString()+'#'+type+crypto.keccak256(ByteArray.fromUTF8(id)).toHex();
 
 }
 
@@ -88,42 +85,39 @@ export function saveStats(from: User, loanToken: string, collateralToken: string
     let total = getStatById("T", 0, null, loanToken, collateralToken);
     let totalPerUser = getStatById("T", 0, from, loanToken, collateralToken);
 
-    let accumulated = getStatById("A", eventTimeStamp, null, loanToken, collateralToken);
-    let accumulatedPerUser = getStatById("A", eventTimeStamp, from, loanToken, collateralToken);
-
     let daily = getStatById("D", eventTimeStamp, null, loanToken, collateralToken);
     let dailyPerUser = getStatById("D", eventTimeStamp, from, loanToken, collateralToken);
 
+    let accumulatedId = getStatId("A", daily.date, null, loanToken, collateralToken);
+    let accumulatedPerUserId = getStatId("A", dailyPerUser.date, from, loanToken, collateralToken);
 
     total.lastEventTimeStamp = eventTimeStamp;
     total.lastEventType = lastEventType;
     totalPerUser.lastEventTimeStamp = eventTimeStamp;
     totalPerUser.lastEventType = lastEventType;
-    accumulated.lastEventTimeStamp = eventTimeStamp;
-    accumulated.lastEventType = lastEventType;
-    accumulatedPerUser.lastEventTimeStamp = eventTimeStamp;
-    accumulatedPerUser.lastEventType = lastEventType;
+    
     daily.lastEventTimeStamp = eventTimeStamp;
     daily.lastEventType = lastEventType;
     dailyPerUser.lastEventTimeStamp = eventTimeStamp;
     dailyPerUser.lastEventType = lastEventType;
-
     addValues(total, keys, values);
     addValues(totalPerUser, keys, values);
     addValues(daily, keys, values);
     addValues(dailyPerUser, keys, values);
-
-
     total.save();
     totalPerUser.save();
 
-    copyValues(total, accumulated, keys);
-    copyValues(totalPerUser, accumulatedPerUser, keys);
-    accumulated.save();
-    accumulatedPerUser.save();
+    total.id = accumulatedId;
+    totalPerUser.id = accumulatedPerUserId;
+    total.type = "A";
+    totalPerUser.type = "A";
+    total.date = daily.date;
+    totalPerUser.date = dailyPerUser.date;
+    total.save();
+    totalPerUser.save();
 
-    daily.accumulated = accumulated.id;
-    dailyPerUser.accumulated = accumulatedPerUser.id;
+    daily.accumulated = accumulatedId;
+    dailyPerUser.accumulated = accumulatedPerUserId;
     daily.save();
     dailyPerUser.save();
 

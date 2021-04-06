@@ -112,7 +112,7 @@ export function handlePayTradingFee(networkEvent: PayTradingFee): void {
 
     saveStats(payer, event.token, event.timestamp,  
         'PayTradingFee', 
-        ['SettleFeeRewardForInterestExpense', 'payTradingFeeTxCount'],
+        ['payTradingFeeVolume', 'payTradingFeeTxCount'],
         [event.amount, ONE_BI]
     );
     
