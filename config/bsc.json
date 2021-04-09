@@ -4,7 +4,28 @@
   "staking": [
   ],
   "farming":[
-    
+    {
+      "name": "Masterchef",
+      "address": "0x1FDCA2422668B961E162A8849dc0C2feaDb58915",
+      "abi": "Masterchef",
+      "entities": [
+        {
+          "entity": "FarmingDepositEvent", 
+          "event": "Deposit(indexed address,indexed uint256,uint256)", 
+          "handler": "handleDeposit"
+        },
+        {
+          "entity": "FarmingWithdrawEvent", 
+          "event": "Withdraw(indexed address,indexed uint256,uint256)", 
+          "handler": "handleWithdraw"
+        },
+        {
+          "entity": "FarmingEmergencyWithdrawEvent", 
+          "event": "EmergencyWithdraw(indexed address,indexed uint256,uint256)", 
+          "handler": "handleEmergencyWithdraw"
+        }
+      ]
+    }
   ],
   "protocol": [
     {

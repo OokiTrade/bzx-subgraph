@@ -9,7 +9,7 @@ function getStatId(type: string, timeStamp: i32, user: User, token: string, pid:
         + ((token) ? ('-' + token) : EMPTY_STRING)
         + pid.toString()
 
-    return timeStamp.toString()+'#'+type+crypto.keccak256(ByteArray.fromUTF8(id)).toHex();
+    return timeStamp.toString() + '#' + type + crypto.keccak256(ByteArray.fromUTF8(id)).toHex();
 
 }
 
@@ -24,7 +24,8 @@ function getNewStat(type: string, timeStamp: i32, user: User, token: string, pid
     statsData.token = token;
     statsData.type = type;
     statsData.pid = pid;
-
+    statsData.depistAmountVolume = ZERO_BD
+    statsData.depositTxCount = ZERO_BI
     statsData.withdrawAmountVolume = ZERO_BD
     statsData.withdrawTxCount = ZERO_BI
     statsData.claimAmountVolume = ZERO_BD
@@ -42,7 +43,7 @@ function getStatById(type: string, eventTimeStamp: i32, user: User, token: strin
     return statsData as FarmingStat;
 }
 
-export function saveStats(from: User, token: string, pid:i32, eventTimeStamp: i32,
+export function saveStats(from: User, token: string, pid: i32, eventTimeStamp: i32,
     lastEventType: string,
     keys: string[],
     values: BigInt[],
@@ -52,7 +53,7 @@ export function saveStats(from: User, token: string, pid:i32, eventTimeStamp: i3
     let total = getStatById("T", 0, null, token, pid);
     let totalPerUser = getStatById("T", 0, from, token, pid);
 
-    
+
     let daily = getStatById("D", eventTimeStamp, null, token, pid);
     let dailyPerUser = getStatById("D", eventTimeStamp, from, token, pid);
     let accumulatedId = getStatId("A", daily.date, null, token, pid);
