@@ -25,6 +25,7 @@ export function handleWithdrawLendingFees(networkEvent: WithdrawLendingFees): vo
   let timestamp = networkEvent.block.timestamp.toI32();
   let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
   let receiver = getUser(networkEvent.params.receiver.toHex(), timestamp);
+  event.user = networkEvent.transaction.from.toHex()
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
@@ -32,16 +33,17 @@ export function handleWithdrawLendingFees(networkEvent: WithdrawLendingFees): vo
   event.sender = sender.id;
   event.receiver = receiver.id;
   event.amount = networkEvent.params.amount;
+  event.type = 'ProtocolWithdrawLendingFeesEvent'
   event.save();
 
   saveStats(sender, event.token, event.timestamp,  
-    'WithdrawLendingFees', 
+    event.type, 
     ['withdrawLendingFeesSenderVolume', 'withdrawLendingFeesSenderTxCount'],
     [event.amount, ONE_BI]
   );
 
   saveStats(receiver, event.token, event.timestamp,  
-    'WithdrawLendingFees', 
+    event.type, 
     ['withdrawLendingFeesReceiverVolume', 'withdrawLendingFeesReceiverTxCount'],
     [event.amount, ONE_BI]
   );
@@ -57,6 +59,7 @@ export function handleWithdrawTradingFees(networkEvent: WithdrawTradingFees): vo
   let timestamp = networkEvent.block.timestamp.toI32();
   let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
   let receiver = getUser(networkEvent.params.receiver.toHex(), timestamp);
+  event.user = networkEvent.transaction.from.toHex()
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
@@ -64,16 +67,17 @@ export function handleWithdrawTradingFees(networkEvent: WithdrawTradingFees): vo
   event.sender = sender.id;
   event.receiver = receiver.id;
   event.amount = networkEvent.params.amount;
+  event.type = 'ProtocolWithdrawTradingFeesEvent'
   event.save();
 
   saveStats(sender, event.token, event.timestamp,  
-    'WithdrawTradingFees', 
+    event.type, 
     ['withdrawTradingFeesSenderVolume', 'withdrawTradingFeesSenderTxCount'],
     [event.amount, ONE_BI]
   );
 
   saveStats(receiver, event.token, event.timestamp,  
-    'WithdrawTradingFees', 
+    event.type, 
     ['withdrawTradingFeesReceiverVolume', 'withdrawTradingFeesReceiverTxCount'],
     [event.amount, ONE_BI]
   );
@@ -90,6 +94,7 @@ export function handleWithdrawBorrowingFees(networkEvent: WithdrawBorrowingFees)
   let timestamp = networkEvent.block.timestamp.toI32();
   let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
   let receiver = getUser(networkEvent.params.receiver.toHex(), timestamp);
+  event.user = networkEvent.transaction.from.toHex()
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
@@ -97,16 +102,17 @@ export function handleWithdrawBorrowingFees(networkEvent: WithdrawBorrowingFees)
   event.sender = sender.id;
   event.receiver = receiver.id;
   event.amount = networkEvent.params.amount;
+  event.type = 'ProtocolWithdrawBorrowingFeesEvent'
   event.save();
 
   saveStats(sender, event.token, event.timestamp,  
-    'WithdrawBorrowingFees', 
+    event.type, 
     ['withdrawBorrowingFeesSenderVolume', 'withdrawBorrowingFeesSenderTxCount'],
     [event.amount, ONE_BI]
   );
 
   saveStats(receiver, event.token, event.timestamp,  
-    'WithdrawBorrowingFees', 
+    event.type, 
     ['withdrawBorrowingFeesReceiverVolume', 'withdrawBorrowingFeesReceiverTxCount'],
     [event.amount, ONE_BI]
   );

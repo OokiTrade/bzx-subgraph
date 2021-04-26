@@ -25,20 +25,20 @@ export function addValues(stats: Entity, keys: string[], values: BigInt[]): void
       log.debug("Skip adding 0 value", [])
       continue;
     }
-
+    log.debug("Add value {} = {}", [key, values[i].toString()])
     if (value.kind === ValueKind.BIGDECIMAL) {
-      value.data = values[i].toBigDecimal().plus(value.toBigDecimal()) as u64;
+      stats.setBigDecimal(key, values[i].toBigDecimal().plus(value.toBigDecimal()));
     }
-    if (value.kind === ValueKind.BIGINT) {
-      value.data = values[i].plus(value.toBigInt()) as u64;
+    else if (value.kind === ValueKind.BIGINT) {
+      stats.setBigInt(key, values[i].plus(value.toBigInt()));
     }
-    if (value.kind === ValueKind.INT) {
-      value.data = values[i].plus(value.toBigInt()).toI32() as u64;
+    else if (value.kind === ValueKind.INT) {
+      stats.setI32(key, values[i].plus(value.toBigInt()).toI32());
     }
-    if (value.kind === ValueKind.STRING) {
-      value.data = values[i].toString() as u64;
+    else if (value.kind === ValueKind.STRING) {
+      stats.setString(key, values[i].toString());
     }
-    stats.set(key, value as Value);
+    
   }
 }
 

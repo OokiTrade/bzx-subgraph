@@ -22,9 +22,10 @@ export function handleDeposit(networkEvent: Deposit): void {
   event.user = user.id;
   event.amount = networkEvent.params.amount;
   event.pid = networkEvent.params.pid.toI32();
+  event.type = 'FarmingDepositEvent'
   event.save();
   saveStats(user, event.address, event.pid, event.timestamp,  
-    'Deposit', 
+    event.type,
     ['depistAmountVolume', 'depositTxCount'],
     [event.amount, ONE_BI]
   );
@@ -47,10 +48,11 @@ export function handleWithdraw(networkEvent: Withdraw): void {
   event.user = user.id;
   event.amount = networkEvent.params.amount;
   event.pid = networkEvent.params.pid.toI32();
+  event.type = 'FarmingWithdrawEvent'
   event.save();
 
   saveStats(user, event.address, event.pid, event.timestamp,  
-    'Withdraw', 
+    event.type, 
     ['withdrawAmountVolume', 'withdrawTxCount'],
     [event.amount, ONE_BI]
   );
@@ -73,10 +75,11 @@ export function handleEmergencyWithdraw(networkEvent: EmergencyWithdraw): void {
   event.user = user.id;
   event.amount = networkEvent.params.amount;
   event.pid = networkEvent.params.pid.toI32();
+  event.type = 'FarmingEmergencyWithdrawEvent'
   event.save();
 
   saveStats(user, event.address, networkEvent.params.pid.toI32(), event.timestamp,  
-    'EmergencyWithdraw', 
+    event.type,
     ['emergencyWithdrawAmountVolume', 'emergencyWithdrawTxCount'],
     [event.amount, ONE_BI]
   );

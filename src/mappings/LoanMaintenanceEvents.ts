@@ -42,10 +42,11 @@ export function handleDepositCollateral(networkEvent: DepositCollateral): void {
     event.timestamp = timestamp;
     event.depositToken = networkEvent.params.depositToken.toHex();
     event.depositAmount = networkEvent.params.depositAmount;
+    event.type = 'ProtocolDepositCollateralEvent'
     event.save();
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'DepositCollateral',
+        event.type,
         ['depositCollateralDepositAmountVolume', 'depositCollateralTxCount'],
         [event.depositAmount, ONE_BI]
     );
@@ -75,10 +76,11 @@ export function handleWithdrawCollateral(networkEvent: WithdrawCollateral): void
     event.timestamp = timestamp;
     event.withdrawToken = networkEvent.params.withdrawToken.toHex();
     event.withdrawAmount = networkEvent.params.withdrawAmount;
+    event.type = 'ProtocolWithdrawCollateralEvent'
     event.save();
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'WithdrawCollateral',
+        event.type,
         ['withdrawCollateralWithdrawAmountVolume', 'withdrawCollateralTxCount'],
         [event.withdrawAmount, ONE_BI]
     );
@@ -110,10 +112,11 @@ export function handleExtendLoanDuration(networkEvent: ExtendLoanDuration): void
     event.depositAmount = networkEvent.params.depositAmount;
     event.collateralUsedAmount = networkEvent.params.collateralUsedAmount;
     event.newEndTimestamp = networkEvent.params.newEndTimestamp.toI32();
+    event.type = 'ProtocolExtendLoanDurationEvent'
     event.save();
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'ExtendLoanDuration',
+        event.type,
         ['extendLoanDurationDepositAmountVolume','extendLoanDurationCollateralUsedAmountVolume', 'extendLoanDurationTxCount'],
         [event.depositAmount, event.collateralUsedAmount, ONE_BI]
     );
@@ -145,10 +148,11 @@ export function handleReduceLoanDuration(networkEvent: ReduceLoanDuration): void
     event.withdrawToken = networkEvent.params.withdrawToken.toHex();
     event.withdrawAmount = networkEvent.params.withdrawAmount;
     event.newEndTimestamp = networkEvent.params.newEndTimestamp.toI32();
+    event.type = 'ProtocolReduceLoanDurationEvent'
     event.save();
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'ReduceLoanDuration',
+        event.type,
         ['reduceLoanDurationWithdrawAmountVolume', 'reduceLoanDurationTxCount'],
         [event.withdrawAmount, ONE_BI]
     );
@@ -173,6 +177,7 @@ export function handleClaimReward(networkEvent: ClaimReward): void {
     event.receiver = receiver.id;
     event.token = networkEvent.params.token.toHex();
     event.amount = networkEvent.params.amount;
+    event.type = 'ProtocolClaimRewardEvent'
     event.save();
     
     log.debug("handleClaimReward done", []);

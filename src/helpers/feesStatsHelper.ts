@@ -2,7 +2,7 @@ import { FeesStat, User } from "../types/schema";
 import { EMPTY_STRING, ZERO_BD, ZERO_BI } from "./constants";
 import {  addValues } from "./helper";
 
-import { BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
+import { BigInt, ByteArray, crypto, log, Value } from "@graphprotocol/graph-ts";
 
 function getStatId(type: string, timeStamp: i32, user: User, token: string): string {
     let id = ((user) ? ('-' + user.id) : "null")
@@ -45,6 +45,18 @@ function getNewStat(type: string, timeStamp: i32, user: User, token: string): Fe
     statsData.withdrawBorrowingFeesReceiverVolume = ZERO_BD
     statsData.withdrawBorrowingFeesReceiverTxCount = ZERO_BI
 
+    statsData.stakingDistributeFeesBzrxRewardsVolume = ZERO_BD
+    statsData.stakingDistributeFeesBzrxRewardsTxCount = ZERO_BI
+    statsData.stakingDistributeFeesStableCoinRewardsVolume = ZERO_BD
+    statsData.stakingDistributeFeesStableCoinRewardsTxCount = ZERO_BI
+
+    statsData.stakingWithdrawFeesTxCount = ZERO_BI
+    statsData.stakingConvertFeesBzrxOutputVolume = ZERO_BD
+    statsData.stakingConvertFeesBzrxOutputTxCount = ZERO_BI
+
+    statsData.stakingConvertFeesStableCoinOutputVolume = ZERO_BD
+    statsData.stakingConvertFeesStableCoinOutputTxCount = ZERO_BI
+
     return statsData as FeesStat;
 }
 function getStatById(type: string, eventTimeStamp: i32, from: User, token: string): FeesStat {
@@ -64,14 +76,11 @@ export function saveStats(user: User, token: string, eventTimeStamp: i32,
     let total = getStatById("T", 0, null, token);
     let totalPerUser = getStatById("T", 0, user, token);
 
-    
-
     let daily = getStatById("D", eventTimeStamp, null, token);
     let dailyPerUser = getStatById("D", eventTimeStamp, user, token);
 
     let accumulatedId = getStatId("A", daily.date, null, token);
     let accumulatedPerUserId = getStatId("A", dailyPerUser.date, user, token);
-
 
     total.lastEventTimeStamp = eventTimeStamp;
     total.lastEventType = lastEventType;
@@ -88,7 +97,6 @@ export function saveStats(user: User, token: string, eventTimeStamp: i32,
     addValues(dailyPerUser, keys, values);
     total.save();
     totalPerUser.save();
-    
     total.id = accumulatedId;
     totalPerUser.id = accumulatedPerUserId;
     total.type = "A";
@@ -97,11 +105,11 @@ export function saveStats(user: User, token: string, eventTimeStamp: i32,
     totalPerUser.date = daily.date;
     total.save();
     totalPerUser.save();
-
+    
     daily.accumulated = accumulatedId;
     dailyPerUser.accumulated = accumulatedPerUserId;
     daily.save();
     dailyPerUser.save();
-
+   
     log.debug("FeesStat: Done saving statistic", []);
 };

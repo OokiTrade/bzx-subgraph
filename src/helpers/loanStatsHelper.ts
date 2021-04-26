@@ -49,7 +49,7 @@ function getNewStat(type: string, timeStamp: i32, from: User, loanToken: string,
     statsData.loanDepositVolume = ZERO_BD;
     statsData.loanDepositTxCount = ZERO_BI;
     statsData.borrowNewPrincipalVolume = ZERO_BD;
-    statsData.newCollateral = ZERO_BD;
+    statsData.borrowNewCollateral = ZERO_BD;
     statsData.borrowTxCount = ZERO_BI;
     statsData.tradePositionSizeVolume = ZERO_BD;
     statsData.tradeBorrowedAmountVolume = ZERO_BD;
