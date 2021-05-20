@@ -88,7 +88,8 @@ export function handleAddRewards(networkEvent: AddRewards): void {
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
-    event.user = networkEvent.transaction.from.toHex()
+    let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
@@ -142,7 +143,8 @@ export function handleConvertFees(networkEvent: ConvertFees): void {
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
-    event.user = networkEvent.transaction.from.toHex()
+    let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
@@ -170,7 +172,8 @@ export function handleDistributeFees(networkEvent: DistributeFees): void {
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
-    event.user = networkEvent.transaction.from.toHex()
+    let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
@@ -198,7 +201,8 @@ export function handleWithdrawFees(networkEvent: WithdrawFees): void {
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
-    event.user = networkEvent.transaction.from.toHex()
+    let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;

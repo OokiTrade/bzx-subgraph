@@ -25,7 +25,8 @@ export function handleWithdrawLendingFees(networkEvent: WithdrawLendingFees): vo
   let timestamp = networkEvent.block.timestamp.toI32();
   let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
   let receiver = getUser(networkEvent.params.receiver.toHex(), timestamp);
-  event.user = networkEvent.transaction.from.toHex()
+  let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
@@ -59,7 +60,8 @@ export function handleWithdrawTradingFees(networkEvent: WithdrawTradingFees): vo
   let timestamp = networkEvent.block.timestamp.toI32();
   let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
   let receiver = getUser(networkEvent.params.receiver.toHex(), timestamp);
-  event.user = networkEvent.transaction.from.toHex()
+  let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
@@ -94,7 +96,8 @@ export function handleWithdrawBorrowingFees(networkEvent: WithdrawBorrowingFees)
   let timestamp = networkEvent.block.timestamp.toI32();
   let sender = getUser(networkEvent.params.sender.toHex(), timestamp);
   let receiver = getUser(networkEvent.params.receiver.toHex(), timestamp);
-  event.user = networkEvent.transaction.from.toHex()
+  let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;

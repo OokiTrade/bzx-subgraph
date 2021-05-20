@@ -17,7 +17,7 @@ export function handleTransfer(networkEvent: Transfer): void {
   let timestamp = networkEvent.block.timestamp.toI32();
   let from = getUser(networkEvent.params.from.toHex(), timestamp);
   let to = getUser(networkEvent.params.to.toHex(), timestamp);
-  event.user = networkEvent.transaction.from.toHex()
+  event.user = from.id
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
@@ -50,7 +50,8 @@ export function handleApproval(networkEvent: Approval): void {
   let timestamp = networkEvent.block.timestamp.toI32();
   let owner = getUser(networkEvent.params.owner.toHex(), timestamp);
   let spender = getUser(networkEvent.params.spender.toHex(), timestamp);
-  event.user = networkEvent.transaction.from.toHex()
+  let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
   event.transaction = tx.id;
   event.timestamp = timestamp;
   event.address = networkEvent.address.toHex();
@@ -82,7 +83,8 @@ export function handleMint(networkEvent: Mint): void {
   let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
   let timestamp = networkEvent.block.timestamp.toI32();
   let minter = getUser(networkEvent.params.minter.toHex(), timestamp);
-  event.user = networkEvent.transaction.from.toHex()
+  let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
@@ -109,7 +111,8 @@ export function handleBurn(networkEvent: Burn): void {
   let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
   let timestamp = networkEvent.block.timestamp.toI32();
   let burner = getUser(networkEvent.params.burner.toHex(), timestamp);
-  event.user = networkEvent.transaction.from.toHex()
+  let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
@@ -137,7 +140,8 @@ export function handleFlashBorrow(networkEvent: FlashBorrow): void {
   let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
   let timestamp = networkEvent.block.timestamp.toI32();
   let borrower = getUser(networkEvent.params.borrower.toHex(), timestamp);
-  event.user = networkEvent.transaction.from.toHex()
+  let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
