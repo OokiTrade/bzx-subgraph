@@ -1,36 +1,15 @@
 {
   "network": "bsc",
-  "startBlock": 5392370,
+  "startBlock": 12976120,
   "staking": [
   ],
   "farming":[
-    {
-      "name": "Masterchef",
-      "address": "0x1FDCA2422668B961E162A8849dc0C2feaDb58915",
-      "abi": "Masterchef",
-      "entities": [
-        {
-          "entity": "FarmingDepositEvent", 
-          "event": "Deposit(indexed address,indexed uint256,uint256)", 
-          "handler": "handleDeposit"
-        },
-        {
-          "entity": "FarmingWithdrawEvent", 
-          "event": "Withdraw(indexed address,indexed uint256,uint256)", 
-          "handler": "handleWithdraw"
-        },
-        {
-          "entity": "FarmingEmergencyWithdrawEvent", 
-          "event": "EmergencyWithdraw(indexed address,indexed uint256,uint256)", 
-          "handler": "handleEmergencyWithdraw"
-        }
-      ]
-    }
+   
   ],
   "protocol": [
     {
       "name": "LoanOpeningsEvents",
-      "address": "0xC47812857A74425e2039b57891a3DFcF51602d5d",
+      "address": "0xD154eE4982b83a87b0649E5a7DDA1514812aFE1f",
       "abi": "LoanOpeningsEvents",
       "entities": [
         {
@@ -47,7 +26,7 @@
     },
     {
       "name": "FeesEvents",
-      "address": "0xC47812857A74425e2039b57891a3DFcF51602d5d",
+      "address": "0xD154eE4982b83a87b0649E5a7DDA1514812aFE1f",
       "abi": "FeesEvents",
       "entities": [
         {
@@ -79,7 +58,7 @@
     },
     {
       "name": "ProtocolSettingsEvents",
-      "address": "0xC47812857A74425e2039b57891a3DFcF51602d5d",
+      "address": "0xD154eE4982b83a87b0649E5a7DDA1514812aFE1f",
       "abi": "ProtocolSettingsEvents",
       "entities": [
         {
@@ -101,7 +80,7 @@
     },
     {
       "name": "LoanClosingsEvents",
-      "address": "0xC47812857A74425e2039b57891a3DFcF51602d5d",
+      "address": "0xD154eE4982b83a87b0649E5a7DDA1514812aFE1f",
       "abi": "LoanClosingsEvents",
       "entities": [
         {
@@ -128,7 +107,7 @@
     },
     {
       "name": "LoanMaintenanceEvents",
-      "address": "0xC47812857A74425e2039b57891a3DFcF51602d5d",
+      "address": "0xD154eE4982b83a87b0649E5a7DDA1514812aFE1f",
       "abi": "LoanMaintenanceEvents",
       "entities": [
         {
@@ -161,46 +140,13 @@
   ],
 
   "tokens":[
-    {
-      "name": "BZRX",
-      "address": "0x4b87642AEDF10b642BE4663Db842Ecc5A88bf5ba",
-      "abi": "Token",
-      "entities": [
-        {
-          "entity": "TransferEvent", 
-          "event": "Transfer(indexed address,indexed address,uint256)", 
-          "handler": "handleTransfer"
-        },
-        {
-          "entity": "ApprovalEvent", 
-          "event": "Approval(indexed address,indexed address,uint256)", 
-          "handler": "handleApproval"
-        }
-      ]
-    },
-    {
-      "name": "BGOV",
-      "address": "0xf8E026dC4C0860771f691EcFFBbdfe2fa51c77CF",
-      "abi": "Token",
-      "entities": [
-        {
-          "entity": "TransferEvent", 
-          "event": "Transfer(indexed address,indexed address,uint256)", 
-          "handler": "handleTransfer"
-        },
-        {
-          "entity": "ApprovalEvent", 
-          "event": "Approval(indexed address,indexed address,uint256)", 
-          "handler": "handleApproval"
-        }
-      ]
-    }
+    
   ],
 
   "itokens":[
     {
       "name": "iWBNB",
-      "address": "0x49646513609085f39D9e44b413c74530Ba6E2c0F",
+      "address": "0xB8329B5458B1E493EFd8D9DA8C3B5E6D68e67C21",
       "abi": "iToken",
       "entities": [
         {
@@ -232,7 +178,7 @@
     },
     {
       "name": "iETH",
-      "address": "0x949cc03E43C24A954BAa963A00bfC5ab146c6CE7",
+      "address": "0x76F3Fca193Aa9aD86347F70D82F013c19060D22C",
       "abi": "iToken",
       "entities": [
         {
@@ -264,7 +210,7 @@
     },
     {
       "name": "iBUSD",
-      "address": "0x7343b25c4953f4C57ED4D16c33cbEDEFAE9E8Eb9",
+      "address": "0x1a7189Af4e5f58Ddd0b9B195a53E5f4e4b55c949",
       "abi": "iToken",
       "entities": [
         {
@@ -296,7 +242,7 @@
     },
     {
       "name": "iWBTC",
-      "address": "0x97eBF27d40D306aD00bb2922E02c58264b295a95",
+      "address": "0x5BFAC8a40782398fb662A69bac8a89e6EDc574b1",
       "abi": "iToken",
       "entities": [
         {
@@ -328,7 +274,7 @@
     },
     {
       "name": "iUSDT",
-      "address": "0xf326b42A237086F1De4E7D68F2d2456fC787bc01",
+      "address": "0xC3f6816C860e7d7893508C8F8568d5AF190f6d7d",
       "abi": "iToken",
       "entities": [
         {
