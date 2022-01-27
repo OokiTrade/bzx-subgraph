@@ -7,15 +7,16 @@
     "prepare:mainnet-test": "mustache config/mainnet-test.json subgraph.template.yaml > subgraph.yaml",
     "prepare:bsc": "mustache config/bsc.json subgraph.template.yaml > subgraph.yaml",
     "prepare:bsc-test": "mustache config/bsc-test.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:polygon-test": "mustache config/polygon-test.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:polygon": "mustache config/polygon.json subgraph.template.yaml > subgraph.yaml",
     "prepare:kovan": "mustache config/kovan.json subgraph.template.yaml > subgraph.yaml",
     "codegen": "graph codegen --debug --output-dir src/types/"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.19.0",
     "mustache": "^3.1.0"
   },
   "dependencies": {
-    "@graphprotocol/graph-ts": "^0.20.0",
+    "@graphprotocol/graph-ts": "=0.20.0",
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
     "truffle": "^5.0.4",
