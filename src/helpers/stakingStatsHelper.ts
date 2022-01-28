@@ -29,7 +29,7 @@ function getNewStat(type: string, timeStamp: i32, user: User): StakingStat {
 
     return statsData as StakingStat;
 }
-function getStatById(type: string, eventTimeStamp: i32, from: User): StakingStat {
+function getStatById(type: string, eventTimeStamp: i32, from: User|null): StakingStat {
     let dayStartTimestamp = eventTimeStamp / 86400;
 
     let id = getStatId(type, dayStartTimestamp, from);

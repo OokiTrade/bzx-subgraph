@@ -27,7 +27,7 @@ function getNewStat(type: string, timeStamp: i32, user: User, token: string): To
 
     return statsData as TokenStakingStat;
 }
-function getStatById(type: string, eventTimeStamp: i32, from: User, token: string): TokenStakingStat {
+function getStatById(type: string, eventTimeStamp: i32, from: User|null, token: string): TokenStakingStat {
     let dayStartTimestamp = eventTimeStamp / 86400;
 
     let id = getStatId(type, dayStartTimestamp, from, token);
