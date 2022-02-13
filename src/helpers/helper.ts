@@ -20,25 +20,27 @@ export function isString(obj): boolean {
 export function addValues(stats: Entity, keys: string[], values: BigInt[]): void {
   for (let i = 0; i < keys.length; i++) {
     let key = keys[i];
-    let value = stats.get(key);
+    let value = stats.get(key)!;
     if(values[i].toString()==='0') {
       log.debug("Skip adding 0 value", [])
       continue;
     }
     log.debug("Add value {} = {}", [key, values[i].toString()])
-    if (value.kind === ValueKind.BIGDECIMAL) {
-      stats.setBigDecimal(key, values[i].toBigDecimal().plus(value.toBigDecimal()));
-    }
+    const kind = value.kind;
+    if(kind){
+      if (kind === ValueKind.BIGDECIMAL) {
+        stats.setBigDecimal(key, values[i].toBigDecimal().plus(value.toBigDecimal()));
+      }
     else if (value.kind === ValueKind.BIGINT) {
       stats.setBigInt(key, values[i].plus(value.toBigInt()));
     }
-    else if (value.kind === ValueKind.INT) {
-      stats.setI32(key, values[i].plus(value.toBigInt()).toI32());
+      else if (kind === ValueKind.INT) {
+        stats.setI32(key, values[i].plus(value.toBigInt()).toI32());
+      }
+      else if (kind === ValueKind.STRING) {
+        stats.setString(key, values[i].toString());
+      }
     }
-    else if (value.kind === ValueKind.STRING) {
-      stats.setString(key, values[i].toString());
-    }
-    
   }
 }
 
@@ -50,13 +52,21 @@ export function getEventId(hash: Bytes, index: BigInt): string {
 
 export function saveTransaction(transaction: ethereum.Transaction, block: ethereum.Block): Transaction {
   log.info("saveTransaction: Start {}", [transaction.hash.toHex()]);
-  let tx = Transaction.load(transaction.hash.toHex()) || new Transaction(transaction.hash.toHex());
+  let tx = Transaction.load(transaction.hash.toHex());
+  if(!tx){
+    tx = new Transaction(transaction.hash.toHex());
+  }
   tx.blockNumber = block.number;
-  tx.gasUsed = transaction.gasUsed;
+  tx.gasUsed = block.gasUsed;
   tx.gasPrice = transaction.gasPrice;
   tx.timestamp = block.timestamp.toI32();
-  tx.from = transaction.from.toHex();
-  tx.to = transaction.to.toHex();
+  if(transaction.from){
+    tx.from = transaction.from.toHex();
+  }
+  const to = transaction.to;
+  if(to)
+    tx.to = to.toHex();
+  
   tx.save();
   log.debug("saveTransaction: Done {}", [transaction.hash.toHex()]);
   return tx as Transaction;
@@ -79,7 +89,7 @@ export function getLoanById(id: string): Loan {
 
 
 export function getUser(id: string, timestamp: i32): User {
-  let user = User.load(id) as User;
+  let user = User.load(id) as User|null;
   if (user) return user;
 
   //Create user

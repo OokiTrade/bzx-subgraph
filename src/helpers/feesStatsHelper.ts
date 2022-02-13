@@ -59,7 +59,7 @@ function getNewStat(type: string, timeStamp: i32, user: User, token: string): Fe
 
     return statsData as FeesStat;
 }
-function getStatById(type: string, eventTimeStamp: i32, from: User, token: string): FeesStat {
+function getStatById(type: string, eventTimeStamp: i32, from: User|null, token: string): FeesStat {
     let dayStartTimestamp = eventTimeStamp / 86400;
 
     let id = getStatId(type, dayStartTimestamp, from, token);

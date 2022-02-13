@@ -4,7 +4,7 @@ import {  addValues } from "./helper";
 
 import { BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
 
-function getStatId(type: string, timeStamp: i32, from: User, loanToken: string, collateralToken: string): string {
+function getStatId(type: string, timeStamp: i32, from: User|null, loanToken: string, collateralToken: string): string {
     let id = ((from) ? ('-' + from.id) : EMPTY_STRING)
         + ((loanToken) ? ('-' + loanToken) : EMPTY_STRING)
         + ((collateralToken) ? ('-' + collateralToken) : EMPTY_STRING)
@@ -13,7 +13,7 @@ function getStatId(type: string, timeStamp: i32, from: User, loanToken: string, 
 
 }
 
-function getNewStat(type: string, timeStamp: i32, from: User, loanToken: string, collateralToken: string): LoanStat {
+function getNewStat(type: string, timeStamp: i32, from: User|null, loanToken: string, collateralToken: string): LoanStat {
     let id = getStatId(type, timeStamp, from, loanToken, collateralToken);
     let statsData = new LoanStat(id)
     if (from)
@@ -68,7 +68,7 @@ function getNewStat(type: string, timeStamp: i32, from: User, loanToken: string,
 
     return statsData as LoanStat;
 }
-function getStatById(type: string, eventTimeStamp: i32, from: User, loanToken: string, collateralToken: string): LoanStat {
+function getStatById(type: string, eventTimeStamp: i32, from: User|null, loanToken: string, collateralToken: string): LoanStat {
     let dayStartTimestamp = eventTimeStamp / 86400;
 
     let id = getStatId(type, dayStartTimestamp, from, loanToken, collateralToken);

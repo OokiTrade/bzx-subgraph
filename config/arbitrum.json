@@ -1,0 +1,355 @@
+{
+  "network": "arbitrum-one",
+  "startBlock": 3985540,
+  "staking": [
+  ],
+  "farming":[
+   
+  ],
+  "protocol": [
+    {
+      "name": "LoanOpeningsEvents",
+      "address": "0x37407F3178ffE07a6cF5C847F8f680FEcf319FAB",
+      "abi": "LoanOpeningsEvents",
+      "entities": [
+        {
+          "entity": "BorrowEvent", 
+          "event": "Borrow(indexed address,indexed address,indexed bytes32,address,address,uint256,uint256,uint256,uint256,uint256,uint256)", 
+          "handler": "handleBorrow"
+        },
+        {
+          "entity": "TradeEvent", 
+          "event": "Trade(indexed address,indexed address,indexed bytes32,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)", 
+          "handler": "handleTrade"
+        }
+      ]
+    },
+    
+    {
+      "name": "LoanClosingsEvents",
+      "address": "0x37407F3178ffE07a6cF5C847F8f680FEcf319FAB",
+      "abi": "LoanClosingsEvents",
+      "entities": [
+        {
+          "entity": "CloseWithDepositEvent", 
+          "event": "CloseWithDeposit(indexed address,indexed address,indexed bytes32,address,address,address,uint256,uint256,uint256,uint256)", 
+          "handler": "handleCloseWithDeposit"
+        },
+        {
+          "entity": "CloseWithSwapEvent", 
+          "event": "CloseWithSwap(indexed address,indexed address,indexed bytes32,address,address,address,uint256,uint256,uint256,uint256)", 
+          "handler": "handleCloseWithSwap"
+        },
+        {
+          "entity": "LiquidateEvent", 
+          "event": "Liquidate(indexed address,indexed address,indexed bytes32,address,address,address,uint256,uint256,uint256,uint256)", 
+          "handler": "handleLiquidate"
+        },
+        {
+          "entity": "RolloverEvent", 
+          "event": "Rollover(indexed address,indexed address,indexed bytes32,address,address,address,uint256,uint256,uint256,uint256)", 
+          "handler": "handleRollover"
+        }
+      ]
+    },
+    {
+      "name": "LoanMaintenanceEvents",
+      "address": "0x37407F3178ffE07a6cF5C847F8f680FEcf319FAB",
+      "abi": "LoanMaintenanceEvents",
+      "entities": [
+        {
+          "entity": "DepositCollateralEvent", 
+          "event": "DepositCollateral(indexed address,indexed address,indexed bytes32,uint256)", 
+          "handler": "handleDepositCollateral"
+        },
+        {
+          "entity": "WithdrawCollateralEvent", 
+          "event": "WithdrawCollateral(indexed address,indexed address,indexed bytes32,uint256)", 
+          "handler": "handleWithdrawCollateral"
+        },
+        {
+          "entity": "ExtendLoanDurationEvent", 
+          "event": "ExtendLoanDuration(indexed address,indexed address,indexed bytes32,uint256,uint256,uint256)", 
+          "handler": "handleExtendLoanDuration"
+        },
+        {
+          "entity": "ReduceLoanDurationEvent", 
+          "event": "ReduceLoanDuration(indexed address,indexed address,indexed bytes32,uint256,uint256)", 
+          "handler": "handleReduceLoanDuration"
+        },
+        {
+          "entity": "ClaimRewardEvent", 
+          "event": "ClaimReward(indexed address,indexed address,indexed address,uint256)", 
+          "handler": "handleClaimReward"
+        }
+      ]
+    }
+  ],
+
+  "tokens":[
+    
+  ],
+
+  "itokens":[
+    {
+      "name": "iETH",
+      "address": "0xE602d108BCFbB7f8281Fd0835c3CF96e5c9B5486",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent", 
+          "event": "Mint(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent", 
+          "event": "Burn(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow", 
+          "event": "FlashBorrow(address,address,address,uint256)", 
+          "handler": "handleFlashBorrow"
+        }
+      ]
+    },
+    {
+      "name": "iBTC",
+      "address": "0x4eBD7e71aFA27506EfA4a4783DFbFb0aD091701e",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent", 
+          "event": "Mint(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent", 
+          "event": "Burn(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow", 
+          "event": "FlashBorrow(address,address,address,uint256)", 
+          "handler": "handleFlashBorrow"
+        }
+      ]
+    },
+    {
+      "name": "iSPELL",
+      "address": "0x05a3a6C19efb00aB01fC7f0C8c4B8D2109d7Dc5A",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent", 
+          "event": "Mint(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent", 
+          "event": "Burn(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow", 
+          "event": "FlashBorrow(address,address,address,uint256)", 
+          "handler": "handleFlashBorrow"
+        }
+      ]
+    },
+    {
+      "name": "iLINK",
+      "address": "0x76F3Fca193Aa9aD86347F70D82F013c19060D22C",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent", 
+          "event": "Mint(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent", 
+          "event": "Burn(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow", 
+          "event": "FlashBorrow(address,address,address,uint256)", 
+          "handler": "handleFlashBorrow"
+        }
+      ]
+    },
+    {
+      "name": "iUSDC",
+      "address": "0xEDa7f294844808B7C93EE524F990cA7792AC2aBd",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent", 
+          "event": "Mint(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent", 
+          "event": "Burn(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow", 
+          "event": "FlashBorrow(address,address,address,uint256)", 
+          "handler": "handleFlashBorrow"
+        }
+      ]
+    },
+
+    {
+      "name": "iUSDT",
+      "address": "0xd103a2D544fC02481795b0B33eb21DE430f3eD23",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent", 
+          "event": "Mint(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent", 
+          "event": "Burn(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow", 
+          "event": "FlashBorrow(address,address,address,uint256)", 
+          "handler": "handleFlashBorrow"
+        }
+      ]
+    },
+
+    {
+      "name": "iMIM",
+      "address": "0x7Dcc818B91062213CB57b525108d97236068076b",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent", 
+          "event": "Mint(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent", 
+          "event": "Burn(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow", 
+          "event": "FlashBorrow(address,address,address,uint256)", 
+          "handler": "handleFlashBorrow"
+        }
+      ]
+    },
+
+    {
+      "name": "iFRAX",
+      "address": "0xC3f6816C860e7d7893508C8F8568d5AF190f6d7d",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent", 
+          "event": "Mint(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent", 
+          "event": "Burn(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow", 
+          "event": "FlashBorrow(address,address,address,uint256)", 
+          "handler": "handleFlashBorrow"
+        }
+      ]
+    }
+
+  ]
+}

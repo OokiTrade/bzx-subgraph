@@ -4,14 +4,14 @@ import {  addValues } from "./helper";
 
 import { BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
 
-function getStatId(type: string, timeStamp: i32, user: User, token: string): string {
+function getStatId(type: string, timeStamp: i32, user: User|null, token: string): string {
     let id = ((user) ? ('-' + user.id) : EMPTY_STRING)
         + ((token) ? ('-' + token) : EMPTY_STRING)
 
     return timeStamp.toString()+'#'+type+crypto.keccak256(ByteArray.fromUTF8(id)).toHex();
 }
 
-function getNewStat(type: string, timeStamp: i32, user: User, token: string): TokenStat {
+function getNewStat(type: string, timeStamp: i32, user: User|null, token: string): TokenStat {
     let id = getStatId(type, timeStamp, user, token);
     let statsData = new TokenStat(id)
     statsData.type = type;
@@ -41,7 +41,7 @@ function getNewStat(type: string, timeStamp: i32, user: User, token: string): To
 
     return statsData as TokenStat;
 }
-function getStatById(type: string, eventTimeStamp: i32, user: User, token: string): TokenStat {
+function getStatById(type: string, eventTimeStamp: i32, user: User|null, token: string): TokenStat {
     let dayStartTimestamp = eventTimeStamp / 86400;
 
     let id = getStatId(type, dayStartTimestamp, user, token);
