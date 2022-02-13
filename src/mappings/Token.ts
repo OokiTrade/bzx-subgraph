@@ -16,20 +16,22 @@ export function handleTransfer(networkEvent: Transfer): void {
   let timestamp = networkEvent.block.timestamp.toI32();
   let from = getUser(networkEvent.params.from.toHex(), timestamp);
   let to = getUser(networkEvent.params.to.toHex(), timestamp);
+  event.user = from.id
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
   event.timestamp = timestamp;
   event.from = from.id;
   event.to = to.id;
   event.value = networkEvent.params.value;
+  event.type = 'TransferEvent'
   event.save();
   saveStats(from, event.address, event.timestamp,  
-    'Transfer', 
+    event.type, 
     ['transferFromVolume', 'transferFromTxCount'],
     [event.value, ONE_BI]
   );
   saveStats(from, event.address, event.timestamp,  
-    'Transfer', 
+    event.type, 
     ['transferToVolume', 'transferToTxCount'],
     [event.value, ONE_BI]
   );
@@ -47,21 +49,24 @@ export function handleApproval(networkEvent: Approval): void {
   let timestamp = networkEvent.block.timestamp.toI32();
   let owner = getUser(networkEvent.params.owner.toHex(), timestamp);
   let spender = getUser(networkEvent.params.spender.toHex(), timestamp);
+  let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+  event.user = from.id
   event.transaction = tx.id;
   event.timestamp = timestamp;
   event.address = networkEvent.address.toHex();
   event.owner = owner.id;
   event.spender = spender.id;
   event.value = networkEvent.params.value;
+  event.type = 'ApprovalEvent'
   event.save();
 
   saveStats(owner, event.address, event.timestamp,  
-    'Approval', 
+    event.type, 
     ['approvalOwnerVolume', 'approvalOwnerTxCount'],
     [event.value, ONE_BI]
   );
   saveStats(spender, event.address, event.timestamp,  
-    'Approval', 
+    event.type, 
     ['approvalSpenderVolume', 'approvalSpenderTxCount'],
     [event.value, ONE_BI]
   );

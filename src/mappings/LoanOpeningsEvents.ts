@@ -41,11 +41,12 @@ export function handleBorrow(networkEvent: Borrow): void {
     event.interestDuration = networkEvent.params.interestDuration;
     event.collateralToLoanRate = networkEvent.params.collateralToLoanRate;
     event.currentMargin = networkEvent.params.currentMargin;
+    event.type = 'ProtocolBorrowEvent'
     event.save();
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'Borrow',
-        ['borrowNewPrincipalVolume', 'newCollateral', 'borrowTxCount'],
+        event.type,
+        ['borrowNewPrincipalVolume', 'borrowNewCollateral', 'borrowTxCount'],
         [event.newPrincipal, event.newCollateral, ONE_BI]
     );
     log.debug("handleBorrow done", []);
@@ -77,10 +78,11 @@ export function handleTrade(networkEvent: Trade): void {
     event.entryPrice = networkEvent.params.entryPrice;
     event.entryLeverage = networkEvent.params.entryLeverage;
     event.currentLeverage = networkEvent.params.currentLeverage;
+    event.type = 'ProtocolTradeEvent'
     event.save();
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'Trade',
+        event.type,
         ['tradeBorrowedAmountVolume', 'tradePositionSizeVolume', 'tradeTxCount'],
         [event.borrowedAmount, event.positionSize, ONE_BI]
     );

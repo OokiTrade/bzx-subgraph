@@ -1,6 +1,6 @@
 {
   "network": "mainnet",
-  "startBlock": 10600000,
+  "startBlock": 10000000,
   "farming":[
     
   ],
@@ -39,6 +39,11 @@
           "entity": "DistributeFeesEvent",
           "event": "DistributeFees(indexed address,uint256,uint256)", 
           "handler": "handleDistributeFees"
+        },
+        {
+          "entity": "WithdrawFeesEvent",
+          "event": "WithdrawFees(indexed address)", 
+          "handler": "handleWithdrawFees"
         }
       ]
     }

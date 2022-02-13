@@ -7,8 +7,10 @@ interface Event {
   id: ID!
   timestamp: Int!
   transaction: Transaction!
-
+  user: User!
+  loan: Loan
   address: String!
+  type: String!
 }
 
 type Loan  @entity {
@@ -30,8 +32,10 @@ type Transaction @entity {
 
 type TransferEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   from: User!
@@ -41,8 +45,10 @@ type TransferEvent implements Event @entity {
 
 type ApprovalEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   owner: User!
@@ -52,8 +58,10 @@ type ApprovalEvent implements Event @entity {
 
 type MintEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   minter: User!
@@ -64,8 +72,10 @@ type MintEvent implements Event @entity {
 
 type BurnEvent implements Event @entity {
   id: ID!
+  user: User!  
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   burner: User!
@@ -76,8 +86,10 @@ type BurnEvent implements Event @entity {
 
 type FlashBorrowEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   borrower: User!
@@ -87,64 +99,70 @@ type FlashBorrowEvent implements Event @entity {
 
 type DepositEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  user: User!
   amount: BigInt!
 }
 
 type WithdrawEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  user: User!
   amount: BigInt!
 }
 
 
 type ClaimEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  user: User!
   amount: BigInt!
 }
 
 type FarmingEmergencyWithdrawEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  user: User!
   pid: Int!
   amount: BigInt!
 }
 
 type FarmingDepositEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  user: User!
   pid: Int!
   amount: BigInt!
 }
 
 type FarmingWithdrawEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  user: User!
   pid: Int!
   amount: BigInt!
 }
@@ -152,19 +170,22 @@ type FarmingWithdrawEvent implements Event @entity {
 
 type FarmingOwnershipTransferredEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  user: User!
   pid: Int
   amount: BigInt!
 }
 
 type ProtocolPayLendingFeeEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   payer: User!
@@ -174,57 +195,63 @@ type ProtocolPayLendingFeeEvent implements Event @entity {
 
 type ProtocolSettleFeeRewardForInterestExpenseEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   payer: User!
   token: String!
-  loan: Loan!
+  loan: Loan
   amount: BigInt!
 }
 
 type ProtocolPayTradingFeeEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   payer: User!
   token: String!
-  loan: Loan!
+  loan: Loan
   amount: BigInt!
 }
 
 type ProtocolPayBorrowingFeeEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   payer: User!
   token: String!
-  loan: Loan!
+  loan: Loan
   amount: BigInt!
 }
 
 type ProtocolEarnRewardEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   receiver: User!
   token: String!
-  loan: Loan!
+  loan: Loan
   amount: BigInt!
   feeType: Int!
 }
 
 type ProtocolWithdrawLendingFeesEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   sender: User!
@@ -235,8 +262,10 @@ type ProtocolWithdrawLendingFeesEvent implements Event @entity {
 
 type ProtocolWithdrawTradingFeesEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   sender: User!
@@ -247,8 +276,10 @@ type ProtocolWithdrawTradingFeesEvent implements Event @entity {
 
 type ProtocolWithdrawBorrowingFeesEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   sender: User!
@@ -259,13 +290,13 @@ type ProtocolWithdrawBorrowingFeesEvent implements Event @entity {
 
 type ProtocolCloseWithDepositEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   closer: User!
-  loan: Loan!
-  user: User!
+  loan: Loan
   repayAmount: BigInt!
   collateralWithdrawAmount: BigInt!
   collateralToLoanRate: BigInt!
@@ -273,13 +304,13 @@ type ProtocolCloseWithDepositEvent implements Event @entity {
 }
 type ProtocolCloseWithSwapEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   closer: User!
-  loan: Loan!
-  user: User!
+  loan: Loan
   positionCloseSize: BigInt!
   loanCloseAmount: BigInt!
   exitPrice: BigInt!
@@ -287,13 +318,13 @@ type ProtocolCloseWithSwapEvent implements Event @entity {
 }
 type ProtocolLiquidateEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  liquidator: Loan!
-  user: User!
-  loan: Loan!
+  liquidator: User!
+  loan: Loan
   repayAmount: BigInt!
   collateralWithdrawAmount: BigInt!
   collateralToLoanRate: BigInt!
@@ -302,13 +333,13 @@ type ProtocolLiquidateEvent implements Event @entity {
 
 type ProtocolRolloverEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  loan: Loan!
+  loan: Loan
   caller: User!
-  user: User!
   collateralAmountUsed: BigInt!
   interestAmountAdded: BigInt!
   loanEndTimestamp: Int!
@@ -317,24 +348,24 @@ type ProtocolRolloverEvent implements Event @entity {
 
 type ProtocolLoanDepositEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  loan: Loan!
-  user: User!
+  loan: Loan
   depositValueAsCollateralToken: BigInt!
   depositValueAsLoanToken: BigInt!
 }
 
 type ProtocolBorrowEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  loan: Loan!
-  user: User!
+  loan: Loan
   lender: User!
   newPrincipal: BigInt!
   newCollateral: BigInt!
@@ -345,12 +376,12 @@ type ProtocolBorrowEvent implements Event @entity {
 }
 type ProtocolTradeEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  loan: Loan!
-  user: User!
+  loan: Loan
   lender: User!
   positionSize: BigInt!
   borrowedAmount: BigInt!
@@ -363,37 +394,37 @@ type ProtocolTradeEvent implements Event @entity {
 
 type ProtocolDepositCollateralEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   depositToken: String!
   timestamp: Int!
-  loan: Loan!
-  user: User!
+  loan: Loan
   depositAmount: BigInt!
 }
 
 type ProtocolWithdrawCollateralEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   withdrawToken: String!
   timestamp: Int!
-  loan: Loan!
-  user: User!
+  loan: Loan
   withdrawAmount: BigInt!
 }
 
 type ProtocolExtendLoanDurationEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   depositToken: String!
   timestamp: Int!
-  loan: Loan!
-  user: User!
+  loan: Loan
   depositAmount: BigInt!
   collateralUsedAmount: BigInt!
   newEndTimestamp: Int!
@@ -401,24 +432,25 @@ type ProtocolExtendLoanDurationEvent implements Event @entity {
 
 type ProtocolReduceLoanDurationEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   withdrawToken: String!
   timestamp: Int!
-  loan: Loan!
-  user: User!
+  loan: Loan
   withdrawAmount: BigInt!
   newEndTimestamp: Int!
 }
 
 type ProtocolClaimRewardEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  user: User!
   receiver: User!
   token: String!
   amount: BigInt!
@@ -426,12 +458,13 @@ type ProtocolClaimRewardEvent implements Event @entity {
 
 type ProtocolLoanSwapEvent implements Event @entity {
   id: ID!
+  user: User!
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
   borrower: User!
-  loan: Loan!
+  loan: Loan
   srcToken: String!
   dstToken: String!
   srcAmount: BigInt!
@@ -439,11 +472,12 @@ type ProtocolLoanSwapEvent implements Event @entity {
 }
 type ProtocolExternalSwapEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   timestamp: Int!
-  user: User!
   srcToken: String!
   dstToken: String!
   srcAmount: BigInt!
@@ -452,10 +486,11 @@ type ProtocolExternalSwapEvent implements Event @entity {
 
 type StakingStaked implements Event @entity {
   id: ID!
-  address: String!
-
-  transaction: Transaction!
   user: User!
+  loan: Loan
+  address: String!
+  type: String!
+  transaction: Transaction!
   timestamp: Int!
   delegate: String!
   token: String!
@@ -464,20 +499,22 @@ type StakingStaked implements Event @entity {
 
 type StakingDelegateChanged implements Event @entity {
   id: ID!
-  address: String!
-
-  transaction: Transaction!
   user: User!
+  loan: Loan
+  address: String!
+  type: String!
+  transaction: Transaction!
   timestamp: Int!
   oldDelegate: BigInt!
   newDelegate: BigInt!
 }
 type StakingRewardAdded implements Event @entity {
   id: ID!
-  address: String!
-
-  transaction: Transaction!
   user: User!
+  loan: Loan
+  address: String!
+  type: String!
+  transaction: Transaction!
   timestamp: Int!
   reward: BigInt!
   duration: Int!
@@ -485,10 +522,11 @@ type StakingRewardAdded implements Event @entity {
 
 type StakingStakeEvent implements Event @entity {
   id: ID!
-  address: String!
-
-  transaction: Transaction!
   user: User!
+  loan: Loan
+  address: String!
+  type: String!
+  transaction: Transaction!
   timestamp: Int!
   delegate: String!
   token: String!
@@ -497,10 +535,11 @@ type StakingStakeEvent implements Event @entity {
 
 type StakingUnstakeEvent implements Event @entity {
   id: ID!
-  address: String!
-
-  transaction: Transaction!
   user: User!
+  loan: Loan
+  address: String!
+  type: String!
+  transaction: Transaction!
   timestamp: Int!
   delegate: String!
   token: String!
@@ -509,8 +548,10 @@ type StakingUnstakeEvent implements Event @entity {
 
 type StakingAddRewardsEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   sender: User!
   timestamp: Int!
@@ -520,20 +561,22 @@ type StakingAddRewardsEvent implements Event @entity {
 
 type StakingClaimEvent implements Event @entity {
   id: ID!
-  address: String!
-
-  transaction: Transaction!
   user: User!
+  loan: Loan
+  address: String!
+  type: String!
+  transaction: Transaction!
   timestamp: Int!
   bzrxAmount: BigInt!
   stableCoinAmount: BigInt!
 }
 type StakingChangeDelegateEvent implements Event @entity {
   id: ID!
-  address: String!
-
-  transaction: Transaction!
   user: User!
+  loan: Loan
+  address: String!
+  type: String!
+  transaction: Transaction!
   timestamp: Int!
   oldDelegate: String!
   newDelegate: String!
@@ -541,8 +584,10 @@ type StakingChangeDelegateEvent implements Event @entity {
 
 type StakingWithdrawFeesEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   sender: User!
   timestamp: Int!
@@ -550,8 +595,10 @@ type StakingWithdrawFeesEvent implements Event @entity {
   
 type StakingConvertFeesEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   sender: User!
   timestamp: Int!
@@ -561,8 +608,10 @@ type StakingConvertFeesEvent implements Event @entity {
 
 type StakingDistributeFeesEvent implements Event @entity {
   id: ID!
+  user: User!
+  loan: Loan
   address: String!
-
+  type: String!
   transaction: Transaction!
   sender: User!
   timestamp: Int!
@@ -573,10 +622,10 @@ type StakingDistributeFeesEvent implements Event @entity {
 
 type TokenStakingStat @entity {
   id: ID!
+  user: User
   type: StatsType
   token: String!
   date: Int!
-  user: User
   lastEventTimeStamp: Int!
   lastEventType: String!
   stakeAmountVolume: BigDecimal!
@@ -588,9 +637,9 @@ type TokenStakingStat @entity {
 
 type StakingStat @entity {
   id: ID!
+  user: User
   type: StatsType
   date: Int!
-  user: User
   lastEventTimeStamp: Int!
   lastEventType: String!
 
@@ -600,12 +649,6 @@ type StakingStat @entity {
   claimBzrxAmountVolume:  BigDecimal!
   claimStableCoinAmountVolume:  BigDecimal!
   claimTxCount:  BigInt!
-  convertFeesBzrxOutputVolume:  BigDecimal!
-  convertFeesStableCoinOutputVolume:  BigDecimal!
-  convertFeesTxCount:  BigInt!
-  distributeFeesBzrxRewardsVolume:  BigDecimal!
-  distributeFeesStableCoinRewardsVolume:  BigDecimal!
-  distributeFeesTxCount:  BigInt!
   accumulated: StakingStat
 }
 
@@ -669,6 +712,18 @@ type FeesStat @entity {
   withdrawBorrowingFeesReceiverVolume: BigDecimal!
   withdrawBorrowingFeesReceiverTxCount: BigInt!
 
+  stakingDistributeFeesBzrxRewardsVolume: BigDecimal!
+  stakingDistributeFeesBzrxRewardsTxCount: BigInt!
+  stakingDistributeFeesStableCoinRewardsVolume: BigDecimal!
+  stakingDistributeFeesStableCoinRewardsTxCount: BigInt!
+
+  stakingWithdrawFeesTxCount: BigInt!
+  stakingConvertFeesBzrxOutputVolume: BigDecimal!
+  stakingConvertFeesBzrxOutputTxCount: BigInt!
+
+  stakingConvertFeesStableCoinOutputVolume: BigDecimal!
+  stakingConvertFeesStableCoinOutputTxCount: BigInt!
+
   accumulated: FeesStat
 }
 
@@ -707,7 +762,7 @@ type LoanStat @entity {
   loanDepositVolume: BigDecimal!
   loanDepositTxCount: BigInt!
   borrowNewPrincipalVolume: BigDecimal!
-  newCollateral: BigDecimal!
+  borrowNewCollateral: BigDecimal!
   borrowTxCount: BigInt!
   tradePositionSizeVolume: BigDecimal!
   tradeBorrowedAmountVolume: BigDecimal!

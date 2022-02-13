@@ -43,16 +43,17 @@ export function handleCloseWithDeposit(networkEvent: CloseWithDeposit): void {
     event.collateralWithdrawAmount = networkEvent.params.collateralWithdrawAmount;
     event.collateralToLoanRate = networkEvent.params.collateralToLoanRate;
     event.currentMargin = networkEvent.params.currentMargin;
+    event.type = 'ProtocolCloseWithDepositEvent'
     event.save();
 
     saveStats(closer, loan.loanToken, loan.collateralToken, event.timestamp,
-        'CloseWithDeposit',
+        event.type, 
         ['closeWithDepositRepayAmountCloserVolume', 'closeWithDepositCloserTxCount'],
         [event.repayAmount, ONE_BI]
     );
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'CloseWithDeposit',
+        event.type, 
         ['closeWithDepositRepayAmountUserVolume', 'closeWithDepositUserTxCount'],
         [event.repayAmount, ONE_BI]
     );
@@ -86,17 +87,18 @@ export function handleCloseWithSwap(networkEvent: CloseWithSwap): void {
     event.loanCloseAmount = networkEvent.params.loanCloseAmount;
     event.exitPrice = networkEvent.params.exitPrice;
     event.currentLeverage = networkEvent.params.currentLeverage;
+    event.type = 'ProtocolCloseWithSwapEvent'
     event.save();
 
 
     saveStats(closer, loan.loanToken, loan.collateralToken, event.timestamp,
-        'CloseWithSwap',
+        event.type, 
         ['closeWithSwapPositionCloseSizeCloserVolume', 'closeWithSwapLoanCloseAmountCloserVolume', 'closeWithSwapCloserTxCount'],
         [event.positionCloseSize, event.loanCloseAmount, ONE_BI]
     );
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'CloseWithSwap',
+        event.type, 
         ['closeWithSwapPositionCloseSizeUserVolume', 'closeWithSwapLoanCloseAmountUserVolume', 'closeWithSwapUserTxCount'],
         [event.positionCloseSize, event.loanCloseAmount, ONE_BI]
     );
@@ -128,6 +130,7 @@ export function handleLiquidate(networkEvent: Liquidate): void {
     event.collateralWithdrawAmount = networkEvent.params.collateralWithdrawAmount;
     event.collateralToLoanRate = networkEvent.params.collateralToLoanRate;
     event.currentMargin = networkEvent.params.currentMargin;
+    event.type = 'ProtocolLiquidateEvent'
     event.save();
 
     saveStats(liquidator, loan.loanToken, loan.collateralToken, event.timestamp,
@@ -137,7 +140,7 @@ export function handleLiquidate(networkEvent: Liquidate): void {
     );
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'Liquidate',
+        event.type, 
         ['liquidateRepayAmountUserVolume', 'liquidateUserTxCount'],
         [event.repayAmount, ONE_BI]
     );
@@ -171,16 +174,17 @@ export function handleRollover(networkEvent: Rollover): void {
     event.interestAmountAdded = networkEvent.params.interestAmountAdded;
     event.loanEndTimestamp = networkEvent.params.loanEndTimestamp.toI32();
     event.gasRebate = networkEvent.params.gasRebate;
+    event.type = 'ProtocolRolloverEvent'
     event.save();
 
     saveStats(caller, loan.loanToken, loan.collateralToken, event.timestamp,
-        'Rollover',
+        event.type, 
         ['rolloverCollateralAmountUsedCallerVolume', 'rolloverInterestAmountAddedCallerVolume', 'rolloverCallerTxCount'],
         [event.collateralAmountUsed, event.interestAmountAdded, ONE_BI]
     );
 
     saveStats(user, loan.loanToken, loan.collateralToken, event.timestamp,
-        'Rollover',
+        event.type, 
         ['rolloverCollateralAmountUsedUserVolume', 'rolloverInterestAmountAddedUserVolume', 'rolloverUserTxCount'],
         [event.collateralAmountUsed, event.interestAmountAdded, ONE_BI]
     );

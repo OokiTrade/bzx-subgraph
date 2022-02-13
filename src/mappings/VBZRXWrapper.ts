@@ -21,9 +21,10 @@ export function handleDeposit(networkEvent: Deposit): void {
   event.timestamp = timestamp;
   event.user = user.id;
   event.amount = networkEvent.params.value;
+  event.type = 'DepositEvent'
   event.save();
   saveStats(user, event.address, event.timestamp,  
-    'Deposit', 
+    event.type ,
     ['depistAmountVolume', 'depositTxCount'],
     [event.amount, ONE_BI]
   );
@@ -45,10 +46,11 @@ export function handleWithdraw(networkEvent: Withdraw): void {
   event.address = networkEvent.address.toHex();
   event.user = user.id;
   event.amount = networkEvent.params.value;
+  event.type = 'WithdrawEvent'
   event.save();
 
   saveStats(user, event.address, event.timestamp,  
-    'Withdrawal', 
+    event.type ,
     ['withdrawalAmountVolume', 'withdrawalTxCount'],
     [event.amount, ONE_BI]
   );
@@ -70,10 +72,11 @@ export function handleClaim(networkEvent: Claim): void {
   event.address = networkEvent.address.toHex();
   event.user = user.id;
   event.amount = networkEvent.params.value;
+  event.type = 'ClaimEvent'
   event.save();
 
   saveStats(user, event.address, event.timestamp,  
-    'Claim', 
+    event.type ,
     ['claimAmountVolume', 'claimTxCount'],
     [event.amount, ONE_BI]
   );

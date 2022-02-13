@@ -36,16 +36,19 @@ export function handlePayLendingFee(networkEvent: PayLendingFee): void {
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let payer = getUser(networkEvent.params.payer.toHex(), timestamp);
+    let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+    event.user = from.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
     event.token = networkEvent.params.token.toHex();
     event.payer = payer.id;
     event.amount = networkEvent.params.amount;
+    event.type = 'ProtocolPayLendingFeeEvent'
     event.save();
-
+ 
     saveStats(payer, event.token, event.timestamp,  
-        'PayLendingFee', 
+        event.type, 
         ['payLendingFeeVolume', 'payLendingFeeTxCount'],
         [event.amount, ONE_BI]
     );
@@ -68,6 +71,8 @@ export function handleSettleFeeRewardForInterestExpense(networkEvent: SettleFeeR
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let payer = getUser(networkEvent.params.payer.toHex(), timestamp);
+    let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+    event.user = from.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
@@ -75,10 +80,10 @@ export function handleSettleFeeRewardForInterestExpense(networkEvent: SettleFeeR
     event.payer = payer.id;
     event.loan = loan.id;
     event.amount = networkEvent.params.amount;
+    event.type = 'ProtocolSettleFeeRewardForInterestExpenseEvent'
     event.save();
-
     saveStats(payer, event.token, event.timestamp,  
-        'SettleFeeRewardForInterestExpense', 
+        event.type, 
         ['settleFeeRewardForInterestExpenseVolume', 'settleFeeRewardForInterestExpenseTxCount'],
         [event.amount, ONE_BI]
     );
@@ -102,16 +107,19 @@ export function handlePayTradingFee(networkEvent: PayTradingFee): void {
     let timestamp = networkEvent.block.timestamp.toI32();
     let payer = getUser(networkEvent.params.payer.toHex(), timestamp);
     event.transaction = tx.id;
+    let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+    event.user = from.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
     event.token = networkEvent.params.token.toHex();
     event.payer = payer.id;
     event.loan = loan.id;
     event.amount = networkEvent.params.amount;
+    event.type = 'ProtocolPayTradingFeeEvent'
     event.save();
 
     saveStats(payer, event.token, event.timestamp,  
-        'PayTradingFee', 
+        event.type, 
         ['payTradingFeeVolume', 'payTradingFeeTxCount'],
         [event.amount, ONE_BI]
     );
@@ -133,6 +141,8 @@ export function handlePayBorrowingFee(networkEvent: PayBorrowingFee): void {
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let payer = getUser(networkEvent.params.payer.toHex(), timestamp);
+    let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+    event.user = from.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
@@ -140,9 +150,10 @@ export function handlePayBorrowingFee(networkEvent: PayBorrowingFee): void {
     event.payer = payer.id;
     event.loan = loan.id;
     event.amount = networkEvent.params.amount;
+    event.type = 'ProtocolPayBorrowingFeeEvent'
     event.save();
     saveStats(payer, event.token, event.timestamp,  
-        'PayBorrowingFee', 
+        event.type, 
         ['payBorrowingFeeVolume', 'payBorrowingFeeTxCount'],
         [event.amount, ONE_BI]
     );
@@ -164,6 +175,8 @@ export function handlEarnReward(networkEvent: EarnReward): void {
     let tx = saveTransaction(networkEvent.transaction, networkEvent.block);
     let timestamp = networkEvent.block.timestamp.toI32();
     let receiver = getUser(networkEvent.params.receiver.toHex(), timestamp);
+    let from = getUser(networkEvent.transaction.from.toHex(), timestamp);
+    event.user = from.id;
     event.transaction = tx.id;
     event.address = networkEvent.address.toHex();
     event.timestamp = timestamp;
@@ -172,10 +185,10 @@ export function handlEarnReward(networkEvent: EarnReward): void {
     event.loan = loan.id;
     event.amount = networkEvent.params.amount;
     event.feeType = networkEvent.params.feeType;
-
+    event.type = 'ProtocolEarnRewardEvent'
     event.save();
     saveStats(receiver, event.token, event.timestamp,  
-        'EarnReward', 
+        event.type, 
         ['earnRewardVolume', 'earnRewardTxCount'],
         [event.amount, ONE_BI]
     );

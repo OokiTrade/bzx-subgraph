@@ -26,16 +26,10 @@ function getNewStat(type: string, timeStamp: i32, user: User): StakingStat {
     statsData.claimBzrxAmountVolume = ZERO_BD;
     statsData.claimStableCoinAmountVolume = ZERO_BD;
     statsData.claimTxCount = ZERO_BI;
-    statsData.convertFeesBzrxOutputVolume = ZERO_BD;
-    statsData.convertFeesStableCoinOutputVolume = ZERO_BD;
-    statsData.convertFeesTxCount = ZERO_BI;
-    statsData.distributeFeesBzrxRewardsVolume = ZERO_BD;
-    statsData.distributeFeesStableCoinRewardsVolume = ZERO_BD;
-    statsData.distributeFeesTxCount = ZERO_BI;
 
     return statsData as StakingStat;
 }
-function getStatById(type: string, eventTimeStamp: i32, from: User): StakingStat {
+function getStatById(type: string, eventTimeStamp: i32, from: User|null): StakingStat {
     let dayStartTimestamp = eventTimeStamp / 86400;
 
     let id = getStatId(type, dayStartTimestamp, from);
