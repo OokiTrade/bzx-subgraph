@@ -4,14 +4,14 @@ import {  addValues } from "./helper";
 
 import { BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
 
-function getStatId(type: string, timeStamp: i32, user: User): string {
+function getStatId(type: string, timeStamp: i32, user: User|null): string {
     let id = ((user) ? ('-' + user.id) : EMPTY_STRING)
     
     return timeStamp.toString()+'#'+type+crypto.keccak256(ByteArray.fromUTF8(id)).toHex();
 
 }
 
-function getNewStat(type: string, timeStamp: i32, user: User): StakingStat {
+function getNewStat(type: string, timeStamp: i32, user: User|null): StakingStat {
     let id = getStatId(type, timeStamp, user);
     let statsData = new StakingStat(id)
     statsData.date = timeStamp

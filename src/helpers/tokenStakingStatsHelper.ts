@@ -2,9 +2,9 @@ import { TokenStakingStat, User } from "../types/schema";
 import { EMPTY_STRING, ZERO_BD, ZERO_BI } from "./constants";
 import {  addValues } from "./helper";
 
-import { BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
 
-function getStatId(type: string, timeStamp: i32, user: User, token: string): string {
+function getStatId(type: string, timeStamp: i32, user: User|null, token: string): string {
     let id = ((user) ? ('-' + user.id) : EMPTY_STRING)
         + ((token) ? ('-' + token) : EMPTY_STRING)
 
@@ -12,7 +12,7 @@ function getStatId(type: string, timeStamp: i32, user: User, token: string): str
 
 }
 
-function getNewStat(type: string, timeStamp: i32, user: User, token: string): TokenStakingStat {
+function getNewStat(type: string, timeStamp: i32, user: User|null, token: string): TokenStakingStat {
     let id = getStatId(type, timeStamp, user, token);
     let statsData = new TokenStakingStat(id)
     statsData.type = type;
@@ -24,6 +24,7 @@ function getNewStat(type: string, timeStamp: i32, user: User, token: string): To
     statsData.stakeTxCount = ZERO_BI;
     statsData.unstakeAmountVolume = ZERO_BD;
     statsData.unstakeTxCount = ZERO_BI;
+    statsData.votingPower = ZERO_BI;
 
     return statsData as TokenStakingStat;
 }
@@ -37,6 +38,7 @@ function getStatById(type: string, eventTimeStamp: i32, from: User|null, token: 
 
 export function saveStats(from: User, token: string, eventTimeStamp: i32,
     lastEventType: string,
+    votingBalance: BigInt,
     keys: string[],
     values: BigInt[]
 ): void {
@@ -56,10 +58,12 @@ export function saveStats(from: User, token: string, eventTimeStamp: i32,
     total.lastEventType = lastEventType;
     totalPerUser.lastEventTimeStamp = eventTimeStamp;
     totalPerUser.lastEventType = lastEventType;
+    totalPerUser.votingPower = votingBalance;
     daily.lastEventTimeStamp = eventTimeStamp;
     daily.lastEventType = lastEventType;
     dailyPerUser.lastEventTimeStamp = eventTimeStamp;
     dailyPerUser.lastEventType = lastEventType;
+    dailyPerUser.votingPower = votingBalance;
 
     addValues(total, keys, values);
     addValues(totalPerUser, keys, values);

@@ -7,6 +7,9 @@ import {
     DistributeFees,
     WithdrawFees
 } from '../types/StakingConstants/StakingConstants'
+import {
+    StakingInterface
+} from '../types/StakingConstants/StakingInterface'
 
 import {
     StakingStakeEvent,
@@ -43,9 +46,14 @@ export function handleStake(networkEvent: Stake): void {
     event.amount = networkEvent.params.amount;
     event.type = 'StakingStakeEvent'
     event.save();
-
+    let contractAddress = networkEvent.transaction.to
+    if(!contractAddress)
+        return
+    const contract = StakingInterface.bind(contractAddress)
+    const votingBalance = contract.votingBalanceOfNow(networkEvent.params.user)
     saveTokenStakingStats(user, event.token, event.timestamp,
         event.type, 
+        votingBalance,
         ['stakeAmountVolume', 'stakeTxCount'],
         [event.amount, ONE_BI]
     );
@@ -71,12 +79,19 @@ export function handleUnstake(networkEvent: Unstake): void {
     event.type = 'StakingUnstakeEvent'
     event.save();
 
+
+    let contractAddress = networkEvent.transaction.to
+    if(!contractAddress)
+        return
+    const contract = StakingInterface.bind(contractAddress)
+    const votingBalance = contract.votingBalanceOfNow(networkEvent.params.user)
     saveTokenStakingStats(user, event.token, event.timestamp,
         event.type, 
+        votingBalance,
         ['unstakeAmountVolume', 'unstakeTxCount'],
         [event.amount, ONE_BI]
     );
-
+    
     log.debug("handleUnstake done", []);
 }
 

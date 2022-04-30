@@ -633,6 +633,8 @@ type TokenStakingStat @entity {
   unstakeAmountVolume: BigDecimal!
   unstakeTxCount: BigInt!
   accumulated: TokenStakingStat
+  votingPower: BigInt!
+  assetBalanceOf: BigInt!
 }
 
 type StakingStat @entity {

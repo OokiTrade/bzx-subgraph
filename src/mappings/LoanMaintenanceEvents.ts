@@ -25,7 +25,10 @@ export function handleDepositCollateral(networkEvent: DepositCollateral): void {
     let event = new ProtocolDepositCollateralEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
-
+    if(!networkEvent.params.loanId){
+        log.warning("getLoanById: NULL id. Tx: {}", [networkEvent.transaction.hash.toHex()]);
+        return;
+    }
     let loan = getLoanById(networkEvent.params.loanId.toHex());
     if (!loan) {
         log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
@@ -59,7 +62,10 @@ export function handleWithdrawCollateral(networkEvent: WithdrawCollateral): void
     let event = new ProtocolWithdrawCollateralEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
-
+    if(!networkEvent.params.loanId){
+        log.warning("getLoanById: NULL id. Tx: {}", [networkEvent.transaction.hash.toHex()]);
+        return;
+    }
     let loan = getLoanById(networkEvent.params.loanId.toHex());
     if (!loan) {
         log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
@@ -94,6 +100,10 @@ export function handleExtendLoanDuration(networkEvent: ExtendLoanDuration): void
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
 
+    if(!networkEvent.params.loanId){
+        log.warning("getLoanById: NULL id. Tx: {}", [networkEvent.transaction.hash.toHex()]);
+        return;
+    }
     let loan = getLoanById(networkEvent.params.loanId.toHex());
     if (!loan) {
         log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
@@ -128,7 +138,10 @@ export function handleReduceLoanDuration(networkEvent: ReduceLoanDuration): void
     let event = new ProtocolReduceLoanDurationEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
     );
-
+    if(!networkEvent.params.loanId){
+        log.warning("getLoanById: NULL id. Tx: {}", [networkEvent.transaction.hash.toHex()]);
+        return;
+    }
     let loan = getLoanById(networkEvent.params.loanId.toHex());
     if (!loan) {
         log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
