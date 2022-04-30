@@ -9,6 +9,7 @@
     "prepare:bsc-test": "mustache config/bsc-test.json subgraph.template.yaml > subgraph.yaml",
     "prepare:polygon-test": "mustache config/polygon-test.json subgraph.template.yaml > subgraph.yaml",
     "prepare:polygon": "mustache config/polygon.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:polygon-old": "mustache config/polygon.old.json subgraph.template.yaml > subgraph.yaml",
     "prepare:kovan": "mustache config/kovan.json subgraph.template.yaml > subgraph.yaml",
     "prepare:arbitrum": "mustache config/arbitrum.json subgraph.template.yaml > subgraph.yaml",
     "codegen": "graph codegen --debug --output-dir src/types/"
