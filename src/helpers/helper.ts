@@ -75,8 +75,8 @@ export function saveTransaction(transaction: ethereum.Transaction, block: ethere
 export function saveLoan(id: string, loanToken: string, collateralToken: string): Loan {
   log.info("saveLoan: Start {} {}/{}", [id, loanToken, collateralToken]);
   let loan = Loan.load(id);
-  if (loan) return loan as Loan;
-  loan = new Loan(id);
+  if (!loan) loan = new Loan(id);
+
   loan.loanToken = loanToken;
   loan.collateralToken = collateralToken;
   loan.save();

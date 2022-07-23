@@ -15,10 +15,10 @@ import {
 
 } from '../types/schema'
 
-import { getEventId, saveTransaction, getLoanById, getUser } from '../helpers/helper'
+import { getEventId, saveTransaction, getLoanById, getUser, saveLoan } from '../helpers/helper'
 import { log } from "@graphprotocol/graph-ts";
 import { saveStats } from '../helpers/feesStatsHelper';
-import { ONE_BI } from '../helpers/constants';
+import { ONE_BI, ZERO_ADDRESS } from '../helpers/constants';
 
 const FeesTypes = [
     'Lending',
@@ -94,11 +94,12 @@ export function handleSettleFeeRewardForInterestExpense(networkEvent: SettleFeeR
 export function handlePayTradingFee(networkEvent: PayTradingFee): void {
     log.info("handlePayTradingFee: Start processing event: {}", [networkEvent.logIndex.toString()]);
 
-    let loan = getLoanById(networkEvent.params.loanId.toHex());
-    if (!loan) {
-        log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
-        return;
-    }
+    
+    let loan = saveLoan(networkEvent.params.loanId.toHex(),
+       ZERO_ADDRESS,
+       ZERO_ADDRESS
+    );
+
 
     let event = new ProtocolPayTradingFeeEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)
@@ -129,11 +130,11 @@ export function handlePayTradingFee(networkEvent: PayTradingFee): void {
 export function handlePayBorrowingFee(networkEvent: PayBorrowingFee): void {
     log.info("handlePayBorrowingFee: Start processing event: {}", [networkEvent.logIndex.toString()]);
 
-    let loan = getLoanById(networkEvent.params.loanId.toHex());
-    if (!loan) {
-        log.warning("Related loan {} missing. skip event", [networkEvent.params.loanId.toHex()]);
-        return;
-    }
+    let loan = saveLoan(networkEvent.params.loanId.toHex(),
+       ZERO_ADDRESS,
+       ZERO_ADDRESS
+    );
+
 
     let event = new ProtocolPayBorrowingFeeEvent(
         getEventId(networkEvent.transaction.hash, networkEvent.logIndex)

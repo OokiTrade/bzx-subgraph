@@ -2,11 +2,19 @@
 import { Transfer, Approval, Mint, Burn, FlashBorrow } from '../types/iETH/iToken'
 import { TransferEvent, ApprovalEvent, MintEvent, BurnEvent, FlashBorrowEvent } from '../types/schema'
 import { getEventId, saveTransaction, getUser } from '../helpers/helper'
-import { log } from "@graphprotocol/graph-ts";
-import { ONE_BI } from '../helpers/constants';
-import { saveStats } from '../helpers/tokenStatsHelper';
+import { BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
+import { ONE_BD, ONE_BI, ZERO_ADDRESS, ZERO_BD, ZERO_BI } from '../helpers/constants';
+import { saveStats, getStatById } from '../helpers/tokenStatsHelper';
+import { User } from '../types/schema'
 
 
+function toBigInt(value: BigDecimal): BigInt{
+  return BigInt.fromString(value.toString().split(".")[0]);
+}
+
+function getNewTokenPrice(balance: BigDecimal, lastPrice: BigDecimal, amount: BigDecimal, currentPrice: BigDecimal): BigDecimal{
+  return balance.times(lastPrice).plus((amount.times(currentPrice))).div(balance.plus(amount)); 
+}
 
 export function handleTransfer(networkEvent: Transfer): void {
   log.info("handleTransfer: Start processing event: {}", [networkEvent.logIndex.toString()]);
@@ -17,6 +25,7 @@ export function handleTransfer(networkEvent: Transfer): void {
   let timestamp = networkEvent.block.timestamp.toI32();
   let from = getUser(networkEvent.params.from.toHex(), timestamp);
   let to = getUser(networkEvent.params.to.toHex(), timestamp);
+  
   event.user = from.id
   event.transaction = tx.id;
   event.address = networkEvent.address.toHex();
@@ -26,18 +35,29 @@ export function handleTransfer(networkEvent: Transfer): void {
   event.value = networkEvent.params.value;
   event.type = 'TransferEvent'
   event.save();
-
-  saveStats(from, event.address, event.timestamp,  
+  let toDiff = ZERO_BD;
+  if(event.from != ZERO_ADDRESS && event.to != ZERO_ADDRESS){
+    const toStats = getStatById("T", 0, to, event.address);
+    const fromStats = getStatById("T", 0, from, event.address);
+    const toPrice = toStats.tokenPrice;
+    const toBalance = toStats.balance;
+    const fromPrice = fromStats.tokenPrice;
+    const toTokenPrice = getNewTokenPrice(toBalance, toPrice, event.value.toBigDecimal(), fromPrice);
+    toDiff = toTokenPrice.minus(toPrice);
+  }
+ 
+  saveStats(to, event.address, event.timestamp,  
     event.type, 
-    ['transferFromVolume', 'transferFromTxCount'],
-    [event.value, ONE_BI]
-  );
-  saveStats(from, event.address, event.timestamp,  
-    event.type, 
-    ['transferToVolume', 'transferToTxCount'],
-    [event.value, ONE_BI]
+    ['transferToVolume', 'transferToTxCount',  'balance', 'tokenPrice'],
+    [event.value, ONE_BI, event.value,  toBigInt(toDiff)]
   );
 
+  saveStats(from, event.address, event.timestamp,
+    event.type, 
+    ['transferFromVolume', 'transferFromTxCount', 'balance', 'tokenPrice'],
+    [event.value, ONE_BI, event.value.neg(),  ZERO_BI]
+  );
+ 
   log.debug("handleTransfer done", []);
 }
 
@@ -75,6 +95,7 @@ export function handleApproval(networkEvent: Approval): void {
   log.debug("handleApproval done", []);
 }
 
+
 export function handleMint(networkEvent: Mint): void {
   log.info("handleMint: Start processing event: {}", [networkEvent.logIndex.toString()]);
   let event = new MintEvent(
@@ -95,11 +116,19 @@ export function handleMint(networkEvent: Mint): void {
   event.type = 'MintEvent'
   event.save();
 
+  const minterStats = getStatById("T", 0, from, event.address);
+  const price = minterStats.tokenPrice;
+  const balance = minterStats.balance;
+  const newTokenPrice = getNewTokenPrice(balance, price, event.tokenAmount.toBigDecimal(), event.price.toBigDecimal());
+  let diff = newTokenPrice.minus(price);
+
+  log.info("handleMint done", []);
   saveStats(minter, event.address, event.timestamp,  
     event.type, 
-    ['mintTokenVolume', 'mintAssetVolume', 'mintTxCount'],
-    [event.tokenAmount, event.assetAmount,  ONE_BI]
+    ['mintTokenVolume', 'mintAssetVolume', 'mintTxCount', 'balance', 'tokenPrice'],
+    [event.tokenAmount, event.assetAmount,  ONE_BI, event.tokenAmount, toBigInt(diff)]
   );
+  
   log.debug("handleMint done", []);
 }
 
@@ -122,13 +151,18 @@ export function handleBurn(networkEvent: Burn): void {
   event.price = networkEvent.params.price;
   event.type = 'BurnEvent'
   event.save();
+  
+  const burnerStats = getStatById("T", 0, from, event.address);
 
   saveStats(burner, event.address, event.timestamp,  
     event.type, 
-    ['burnTokenVolume', 'burnAssetVolume', 'burnTxCount'],
-    [event.tokenAmount, event.assetAmount,  ONE_BI]
+    ['burnTokenVolume', 'burnAssetVolume', 'burnTxCount', 'balance', 'tokenPrice'],
+    [event.tokenAmount, event.assetAmount,  ONE_BI, event.tokenAmount.neg(), ZERO_BI]
   );
-  log.debug("handleMint done", []);
+
+
+
+  log.debug("handleBurn done", []);
 }
 
 

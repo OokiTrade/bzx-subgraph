@@ -619,6 +619,92 @@ type StakingDistributeFeesEvent implements Event @entity {
   stableCoinRewards: BigInt!
 }
 
+type DelegateChangedEvent implements Event @entity {
+  id: ID!
+  loan: Loan
+  user: User!
+  address: String!
+  type: String!
+  timestamp: Int!
+  transaction: Transaction!  
+  fromDelegate: User!
+  toDelegate: User!
+}
+
+type DelegateVotesChangedEvent implements Event @entity {
+  id: ID!
+  loan: Loan
+  user: User!
+  address: String!
+  type: String!
+  timestamp: Int!
+  transaction: Transaction!  
+  previousBalance: BigInt!
+  newBalance: BigInt!
+}
+
+type ProposalCreatedEvent implements Event @entity {
+  id: ID!
+  loan: Loan
+  address: String!
+  type: String!
+  timestamp: Int!
+  transaction: Transaction!  
+  proposalId: BigInt!
+  user: User!
+  description: String!
+  startBlock: BigInt!
+  endBlock: BigInt!
+}
+
+type VoteCastEvent implements Event @entity {
+  id: ID!
+  loan: Loan
+  address: String!
+  type: String!
+  timestamp: Int!
+  transaction: Transaction!  
+  proposalId: BigInt!
+  user: User!
+  reason: String!
+  support: Int!
+  votes: BigInt!
+}
+
+type ProposalCanceledEvent implements Event @entity {
+  id: ID!
+  loan: Loan
+  address: String!
+  timestamp: Int!
+  user: User!
+  type: String!
+  transaction: Transaction!  
+  proposalId: BigInt!
+}
+
+type ProposalQueuedEvent implements Event @entity {
+  id: ID!
+  loan: Loan
+  address: String!
+  timestamp: Int!
+  type: String!
+  user: User!
+  transaction: Transaction!  
+  proposalId: BigInt!
+  eta: BigInt!
+}
+
+type ProposalExecutedEvent implements Event @entity {
+  id: ID!
+  loan: Loan
+  address: String!
+  user: User!
+  type: String!
+  timestamp: Int!
+  transaction: Transaction!  
+  proposalId: BigInt!
+}
+
 
 type TokenStakingStat @entity {
   id: ID!
@@ -660,6 +746,8 @@ type TokenStat @entity {
   type: StatsType
   date: Int!
   user: User
+  tokenPrice: BigDecimal!
+  balance: BigDecimal!
   lastEventTimeStamp: Int!
   lastEventType: String!
   transferFromVolume: BigDecimal!

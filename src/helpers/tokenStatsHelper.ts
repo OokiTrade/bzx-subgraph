@@ -1,8 +1,11 @@
 import { TokenStat, User } from "../types/schema";
-import { EMPTY_STRING, ZERO_BD, ZERO_BI } from "./constants";
+import { EMPTY_STRING, ZERO_BD, ZERO_BI, ONE_BD, ONE_BI } from "./constants";
 import {  addValues } from "./helper";
 
-import { BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt, ByteArray, crypto, log } from "@graphprotocol/graph-ts";
+
+
+
 
 function getStatId(type: string, timeStamp: i32, user: User|null, token: string): string {
     let id = ((user) ? ('-' + user.id) : EMPTY_STRING)
@@ -21,6 +24,8 @@ function getNewStat(type: string, timeStamp: i32, user: User|null, token: string
     statsData.date = timeStamp
     statsData.token = token;
     statsData.type = type;
+    statsData.tokenPrice = ONE_BD
+    statsData.balance = ZERO_BD
     statsData.transferFromVolume = ZERO_BD
     statsData.transferToVolume = ZERO_BD
     statsData.approvalOwnerVolume = ZERO_BD
@@ -41,7 +46,7 @@ function getNewStat(type: string, timeStamp: i32, user: User|null, token: string
 
     return statsData as TokenStat;
 }
-function getStatById(type: string, eventTimeStamp: i32, user: User|null, token: string): TokenStat {
+export function getStatById(type: string, eventTimeStamp: i32, user: User|null, token: string): TokenStat {
     let dayStartTimestamp = eventTimeStamp / 86400;
 
     let id = getStatId(type, dayStartTimestamp, user, token);
@@ -79,6 +84,23 @@ export function saveStats(from: User, token: string, eventTimeStamp: i32,
     addValues(totalPerUser, keys, values);
     addValues(daily, keys, values);
     addValues(dailyPerUser, keys, values);
+
+    if(total.balance.le(BigDecimal.fromString('0'))){
+        total.tokenPrice = ONE_BD
+        total.balance = ZERO_BD
+    }
+    if(totalPerUser.balance.le(BigDecimal.fromString('0'))){
+        totalPerUser.tokenPrice = ONE_BD
+        totalPerUser.balance = ZERO_BD
+    }
+    if(daily.balance.le(BigDecimal.fromString('0'))){
+        daily.tokenPrice = ONE_BD
+        daily.balance = ZERO_BD
+    }
+    if(dailyPerUser.balance.le(BigDecimal.fromString('0'))){
+        dailyPerUser.tokenPrice = ONE_BD
+        dailyPerUser.balance = ZERO_BD
+    }
     total.save();
     totalPerUser.save();
 

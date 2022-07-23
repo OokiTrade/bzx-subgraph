@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: LoanOpeningsEvents
-    network: matic
+    network: optimism
     source:
-      address: '0xfe4F0eb0A1Ad109185c9AaDE64C48ff8e928e54B'
+      address: '0xAcedbFd5Bc1fb0dDC948579d4195616c05E74Fd1'
       abi: LoanOpeningsEvents
-      startBlock: 14612370
+      startBlock: 8392449
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -29,11 +29,11 @@ dataSources:
           handler: handleTrade
   - kind: ethereum/contract
     name: LoanClosingsEvents
-    network: matic
+    network: optimism
     source:
-      address: '0xfe4F0eb0A1Ad109185c9AaDE64C48ff8e928e54B'
+      address: '0xAcedbFd5Bc1fb0dDC948579d4195616c05E74Fd1'
       abi: LoanClosingsEvents
-      startBlock: 14612370
+      startBlock: 8392449
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -58,11 +58,11 @@ dataSources:
           handler: handleRollover
   - kind: ethereum/contract
     name: LoanMaintenanceEvents
-    network: matic
+    network: optimism
     source:
-      address: '0xfe4F0eb0A1Ad109185c9AaDE64C48ff8e928e54B'
+      address: '0xAcedbFd5Bc1fb0dDC948579d4195616c05E74Fd1'
       abi: LoanMaintenanceEvents
-      startBlock: 14612370
+      startBlock: 8392449
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -89,12 +89,44 @@ dataSources:
         - event: ClaimReward(indexed address,indexed address,indexed address,uint256)
           handler: handleClaimReward
   - kind: ethereum/contract
-    name: iMATIC
-    network: matic
+    name: iBTC
+    network: optimism
     source:
-      address: '0x949cc03E43C24A954BAa963A00bfC5ab146c6CE7'
+      address: '0x0515fDe94bb95d6A5b7640f8F0d3AC98C9390903'
       abi: iToken
-      startBlock: 14612370
+      startBlock: 8392449
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/iToken.ts
+      abis:
+        - name: iToken
+          file: ./abis/iToken.json
+      entities:
+          - TransferEvent
+          - ApprovalEvent
+          - MintEvent
+          - BurnEvent
+          - FlashBorrow
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Mint(indexed address,uint256,uint256,uint256)
+          handler: handleMint
+        - event: Burn(indexed address,uint256,uint256,uint256)
+          handler: handleBurn
+        - event: FlashBorrow(address,address,address,uint256)
+          handler: handleFlashBorrow
+  - kind: ethereum/contract
+    name: iDAI
+    network: optimism
+    source:
+      address: '0xE60d6142D3d683a58B02337E1F0D08C69B946aCF'
+      abi: iToken
+      startBlock: 8392449
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -122,11 +154,11 @@ dataSources:
           handler: handleFlashBorrow
   - kind: ethereum/contract
     name: iETH
-    network: matic
+    network: optimism
     source:
-      address: '0xf326b42A237086F1De4E7D68F2d2456fC787bc01'
+      address: '0x10b158EDF554dc15dCdBFd93049759e6e35c1384'
       abi: iToken
-      startBlock: 14612370
+      startBlock: 8392449
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -153,44 +185,12 @@ dataSources:
         - event: FlashBorrow(address,address,address,uint256)
           handler: handleFlashBorrow
   - kind: ethereum/contract
-    name: iWBTC
-    network: matic
+    name: iFRAX
+    network: optimism
     source:
-      address: '0x97eBF27d40D306aD00bb2922E02c58264b295a95'
+      address: '0x1dbc7f43d432C8E92762FC9680A5BcF4646FB5e5'
       abi: iToken
-      startBlock: 14612370
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/iToken.ts
-      abis:
-        - name: iToken
-          file: ./abis/iToken.json
-      entities:
-          - TransferEvent
-          - ApprovalEvent
-          - MintEvent
-          - BurnEvent
-          - FlashBorrow
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
-        - event: Mint(indexed address,uint256,uint256,uint256)
-          handler: handleMint
-        - event: Burn(indexed address,uint256,uint256,uint256)
-          handler: handleBurn
-        - event: FlashBorrow(address,address,address,uint256)
-          handler: handleFlashBorrow
-  - kind: ethereum/contract
-    name: iLINK
-    network: matic
-    source:
-      address: '0x500C3877650c6C08A59D425d27441eAe847EcfDa'
-      abi: iToken
-      startBlock: 14612370
+      startBlock: 8392449
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -218,11 +218,11 @@ dataSources:
           handler: handleFlashBorrow
   - kind: ethereum/contract
     name: iUSDC
-    network: matic
+    network: optimism
     source:
-      address: '0x2E1A74a16e3a9F8e3d825902Ab9fb87c606cB13f'
+      address: '0xBFcf8755Ba9d23F7F0EBbA0da70819A907dA2aCC'
       abi: iToken
-      startBlock: 14612370
+      startBlock: 8392449
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -250,75 +250,11 @@ dataSources:
           handler: handleFlashBorrow
   - kind: ethereum/contract
     name: iUSDT
-    network: matic
+    network: optimism
     source:
-      address: '0x18D755c981A550B0b8919F1De2CDF882f489c155'
+      address: '0x32246a17896d8b7aEc4AC4EDc3f5899D0f066855'
       abi: iToken
-      startBlock: 14612370
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/iToken.ts
-      abis:
-        - name: iToken
-          file: ./abis/iToken.json
-      entities:
-          - TransferEvent
-          - ApprovalEvent
-          - MintEvent
-          - BurnEvent
-          - FlashBorrow
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
-        - event: Mint(indexed address,uint256,uint256,uint256)
-          handler: handleMint
-        - event: Burn(indexed address,uint256,uint256,uint256)
-          handler: handleBurn
-        - event: FlashBorrow(address,address,address,uint256)
-          handler: handleFlashBorrow
-  - kind: ethereum/contract
-    name: iAAVE
-    network: matic
-    source:
-      address: '0xf009c28b2D9E13886105714B895f013E2e43EE12'
-      abi: iToken
-      startBlock: 14612370
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/iToken.ts
-      abis:
-        - name: iToken
-          file: ./abis/iToken.json
-      entities:
-          - TransferEvent
-          - ApprovalEvent
-          - MintEvent
-          - BurnEvent
-          - FlashBorrow
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
-        - event: Mint(indexed address,uint256,uint256,uint256)
-          handler: handleMint
-        - event: Burn(indexed address,uint256,uint256,uint256)
-          handler: handleBurn
-        - event: FlashBorrow(address,address,address,uint256)
-          handler: handleFlashBorrow
-  - kind: ethereum/contract
-    name: iBZRX
-    network: matic
-    source:
-      address: '0x97dfbEF4eD5a7f63781472Dbc69Ab8e5d7357cB9'
-      abi: iToken
-      startBlock: 14612370
+      startBlock: 8392449
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
