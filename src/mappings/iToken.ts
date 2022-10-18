@@ -13,6 +13,8 @@ function toBigInt(value: BigDecimal): BigInt{
 }
 
 function getNewTokenPrice(balance: BigDecimal, lastPrice: BigDecimal, amount: BigDecimal, currentPrice: BigDecimal): BigDecimal{
+  if(balance.plus(amount) == ZERO_BD)
+    return lastPrice;
   return balance.times(lastPrice).plus((amount.times(currentPrice))).div(balance.plus(amount)); 
 }
 
@@ -32,8 +34,14 @@ export function handleTransfer(networkEvent: Transfer): void {
   event.timestamp = timestamp;
   event.from = from.id;
   event.to = to.id;
-  event.value = networkEvent.params.value;
+
+  //Internal transfer, skip
+  if(tx.to == event.address)
+    return
+
+  
   event.type = 'TransferEvent'
+  event.value = networkEvent.params.value;
   event.save();
   let toDiff = ZERO_BD;
   if(event.from != ZERO_ADDRESS && event.to != ZERO_ADDRESS){

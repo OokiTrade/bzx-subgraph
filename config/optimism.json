@@ -283,6 +283,38 @@
           "handler": "handleFlashBorrow"
         }
       ]
+    },
+    {
+      "name": "iOP",
+      "address": "0xd1b23ca8119a6c196847f7ba78536bfcffc82780",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent", 
+          "event": "Transfer(indexed address,indexed address,uint256)", 
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent", 
+          "event": "Approval(indexed address,indexed address,uint256)", 
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent", 
+          "event": "Mint(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent", 
+          "event": "Burn(indexed address,uint256,uint256,uint256)", 
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow", 
+          "event": "FlashBorrow(address,address,address,uint256)", 
+          "handler": "handleFlashBorrow"
+        }
+      ]
     }
   ]
 }

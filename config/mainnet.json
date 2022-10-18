@@ -2,104 +2,13 @@
   "network": "mainnet",
   "startBlock": 10000000,
   "votingdelegation": [
-    {
-      "name": "VoteDelegator",
-      "address": "0xea936212fe4f3a69d0e8ecf9a2a35d6c1f8d2c89",
-      "abi": "VoteDelegator",
-      "entities": [
-        {
-          "entity": "DelegateChangedEvent", 
-          "event": "DelegateChanged(indexed address,indexed address,indexed address)", 
-          "handler": "handleDelegateChanged"
-        },
-        {
-          "entity": "DelegateVotesChangedEvent", 
-          "event": "DelegateVotesChanged(indexed address,uint256,uint256)", 
-          "handler": "handleDelegateVotesChanged"
-        }
-      ]
-    }
+    
   ],
   "dao": [
-    {
-      "name": "GovernorBravoDelegate",
-      "address": "0x3133b4f4dcffc083724435784fefad510fa659c6",
-      "abi": "GovernorBravoDelegate",
-      "entities": [
-        {
-          "entity": "ProposalCreatedEvent", 
-          "event": "ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)", 
-          "handler": "handleProposalCreated"
-        },
-        {
-          "entity": "VoteCastEvent", 
-          "event": "VoteCast(indexed address,uint256,uint8,uint256,string)", 
-          "handler": "handleVoteCast"
-        },
-        {
-          "entity": "ProposalCanceledEvent", 
-          "event": "ProposalCanceled(uint256)", 
-          "handler": "handleProposalCanceled"
-        },
-        {
-          "entity": "ProposalExecutedEvent", 
-          "event": "ProposalExecuted(uint256)", 
-          "handler": "handleProposalExecuted"
-        },
-        {
-          "entity": "ProposalQueuedEvent", 
-          "event": "ProposalQueued(uint256,uint256)", 
-          "handler": "handleProposalQueued"
-        }
-      ]
-    }
+    
   ],
   "farming":[
     
-  ],
-  "staking": [
-    {
-      "name": "StakingConstants",
-      "address": "0x16f179f5c344cc29672a58ea327a26f64b941a63",
-      "abi": "StakingConstants",
-      "entities": [
-        {
-          "entity": "StakeEvent", 
-          "event": "Stake(indexed address,indexed address,indexed address,uint256)", 
-          "handler": "handleStake"
-        },
-        {
-          "entity": "UnstakeEvent", 
-          "event": "Unstake(indexed address,indexed address,indexed address,uint256)", 
-          "handler": "handleUnstake"
-        },
-        {
-          "entity": "AddRewardsEvent",
-          "event": "AddRewards(indexed address,uint256,uint256)", 
-          "handler": "handleAddRewards"
-        },
-        {
-          "entity": "ClaimEvent",
-          "event": "Claim(indexed address,uint256,uint256)", 
-          "handler": "handleClaim"
-        },
-        {
-          "entity": "ConvertFeesEvent",
-          "event": "ConvertFees(indexed address,uint256,uint256)", 
-          "handler": "handleConvertFees"
-        },
-        {
-          "entity": "DistributeFeesEvent",
-          "event": "DistributeFees(indexed address,uint256,uint256)", 
-          "handler": "handleDistributeFees"
-        },
-        {
-          "entity": "WithdrawFeesEvent",
-          "event": "WithdrawFees(indexed address)", 
-          "handler": "handleWithdrawFees"
-        }
-      ]
-    }
   ],
   "protocol": [
     {
@@ -116,28 +25,6 @@
           "entity": "TradeEvent", 
           "event": "Trade(indexed address,indexed address,indexed bytes32,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)", 
           "handler": "handleTrade"
-        }
-      ]
-    },
-    {
-      "name": "ProtocolSettingsEvents",
-      "address": "0xD8Ee69652E4e4838f2531732a46d1f7F584F0b7f",
-      "abi": "ProtocolSettingsEvents",
-      "entities": [
-        {
-          "entity": "WithdrawLendingFeesEvent", 
-          "event": "WithdrawLendingFees(indexed address,indexed address,indexed address,uint256)", 
-          "handler": "handleWithdrawLendingFees"
-        },
-        {
-          "entity": "WithdrawTradingFeesEvent", 
-          "event": "WithdrawTradingFees(indexed address,indexed address,indexed address,uint256)", 
-          "handler": "handleWithdrawTradingFees"
-        },
-        {
-          "entity": "WithdrawBorrowingFeesEvent", 
-          "event": "WithdrawBorrowingFees(indexed address,indexed address,indexed address,uint256)", 
-          "handler": "handleWithdrawBorrowingFees"
         }
       ]
     },
