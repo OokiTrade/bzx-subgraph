@@ -624,6 +624,39 @@
           "handler": "handleFlashBorrow"
         }
       ]
+    },
+
+    {
+      "name": "iETH",
+      "address": "0xB983E01458529665007fF7E0CDdeCDB74B967Eb6",
+      "abi": "iToken",
+      "entities": [
+        {
+          "entity": "TransferEvent",
+          "event": "Transfer(indexed address,indexed address,uint256)",
+          "handler": "handleTransfer"
+        },
+        {
+          "entity": "ApprovalEvent",
+          "event": "Approval(indexed address,indexed address,uint256)",
+          "handler": "handleApproval"
+        },
+        {
+          "entity": "MintEvent",
+          "event": "Mint(indexed address,uint256,uint256,uint256)",
+          "handler": "handleMint"
+        },
+        {
+          "entity": "BurnEvent",
+          "event": "Burn(indexed address,uint256,uint256,uint256)",
+          "handler": "handleBurn"
+        },
+        {
+          "entity": "FlashBorrow",
+          "event": "FlashBorrow(address,address,address,uint256)",
+          "handler": "handleFlashBorrow"
+        }
+      ]
     }
   ]
 }
